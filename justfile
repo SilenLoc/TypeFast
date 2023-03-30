@@ -4,3 +4,6 @@
 
 run:
     cargo run
+
+hurl:
+    hurl basic.hurl

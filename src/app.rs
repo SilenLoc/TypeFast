@@ -1,18 +1,18 @@
-use egui::Ui;
+use crate::{settings::TFSetting, typewriter::{TypeState, Challenge}, random::random_letters};
 
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TypeFastApp {
-    command: String,
-    settings_open: bool,
+    settings: TFSetting,
+    type_state: TypeState
 }
 
 impl Default for TypeFastApp {
     fn default() -> Self {
         Self {
-            command: "".into(),
-            settings_open: false,
+            settings: TFSetting::default(),
+            type_state: TypeState::default(),
         }
     }
 }
@@ -46,43 +46,22 @@ impl eframe::App for TypeFastApp {
                     }
                 });
             });
-
-            
-
         });
 
         egui::TopBottomPanel::bottom("bottom_panel_0").show(ctx, |ui| {
-          
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-              ui.text_edit_singleline(&mut self.command);
-                process_command(self, ui, ctx);
+                ui.text_edit_singleline(&mut self.settings.command);
+                TFSetting::process_command(&mut self.settings, ui, ctx);
                 ui.horizontal(|ui| {
-                    ui.spacing_mut().item_spacing.x= 0.5;
-                    if ui.button("open settings").clicked() {
-                        self.command = "open settings;".into();
-                    }
-                    if ui.button("close settings").clicked() {
-                      self.command = "close settings;".into();
-                    }
+                   TFSetting::command_helpers(&mut self.settings, ui);
+               
                 });
             });
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("central");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
-            ui.label("placeholder");
+  
+        self.type_state.render(ui, random_letters(32).as_str())
         });
     }
 
@@ -92,30 +71,10 @@ impl eframe::App for TypeFastApp {
     }
 }
 
-fn process_command(app: &mut TypeFastApp, ui: &mut Ui, ctx: &egui::Context) {
-    let command = app.command.clone();
-    if app.command.contains(";") {
-        app.command.clear();
-    }
 
-    if command.eq("") {
-        ui.label(&app.command);
-    }
 
-    if command.eq("open settings;") {
-        app.settings_open = true
-    }
-
-    if command.eq("close settings;") {
-        app.settings_open = false
-    }
-
-    if app.settings_open {
-        egui::Window::new("Draft setting").show(ctx, |ui| {
-            ui.label("Hey");
-            if ui.button("close").clicked() {
-                app.settings_open = false
-            }
-        });
+impl Challenge for str {
+    fn into_challenge(&self) -> String {
+        self.to_string()
     }
 }
