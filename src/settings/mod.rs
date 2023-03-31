@@ -1,6 +1,6 @@
 use egui::Ui;
 
-use crate::random::{random_english_words, random_letters};
+use crate::random::{random_english_words, random_letters, random_english_sentences};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -14,6 +14,7 @@ pub struct TFSetting {
 pub enum Level {
     RandomLetters,
     RandomEnglishWords,
+    RandomEnglishSentences,
 }
 
 impl Default for TFSetting {
@@ -40,6 +41,9 @@ impl TFSetting {
             if command.contains("words") {
                 self.change_level(Level::RandomEnglishWords);
             }
+            if command.contains("sentences") {
+                self.change_level(Level::RandomEnglishSentences);
+            }
         }
     }
     pub fn command_helpers(&mut self, ui: &mut Ui) {
@@ -47,8 +51,13 @@ impl TFSetting {
         if ui.button("level letters").clicked() {
             self.command = "level letters;".into();
         }
+        
         if ui.button("level words").clicked() {
             self.command = "level words;".into();
+        }
+
+        if ui.button("level sentences").clicked() {
+            self.command = "level sentences;".into();
         }
 
         ui.add(egui::DragValue::new(&mut self.size));
@@ -58,6 +67,7 @@ impl TFSetting {
         match self.level {
             Level::RandomLetters => random_letters(self.size),
             Level::RandomEnglishWords => random_english_words(self.size),
+            Level::RandomEnglishSentences => random_english_sentences(self.size)
         }
     }
 

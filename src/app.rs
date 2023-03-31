@@ -1,3 +1,5 @@
+
+
 use crate::{
     settings::TFSetting,
     typewriter::{Challenge, TypeState},
@@ -13,6 +15,8 @@ pub struct TypeFastApp {
 
 impl Default for TypeFastApp {
     fn default() -> Self {
+
+
         Self {
             settings: TFSetting::default(),
             type_state: TypeState::default(),
@@ -32,11 +36,14 @@ impl TypeFastApp {
 }
 
 impl eframe::App for TypeFastApp {
+    
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::TopBottomPanel::bottom("bottom_panel_0").show(ctx, |ui| {
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 ui.text_edit_singleline(&mut self.settings.command);
+
                 TFSetting::process_command(&mut self.settings, ui, ctx);
+
                 ui.horizontal(|ui| {
                     TFSetting::command_helpers(&mut self.settings, ui);
                 });
@@ -49,7 +56,7 @@ impl eframe::App for TypeFastApp {
         });
     }
 
-    /// Called by the frame work to save state before shutdown.
+
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
     }

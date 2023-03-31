@@ -5,5 +5,5 @@
 run:
     cargo run
 
-hurl:
-    hurl basic.hurl
+test:
+    cargo test
