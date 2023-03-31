@@ -2,7 +2,6 @@ use rand::Rng;
 
 use self::sentences::random_sentence;
 
-// use self::sentences::random_sentence;
 
 pub mod sentences;
 

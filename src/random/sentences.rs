@@ -1,9 +1,9 @@
 use rand::{
-    seq::{self, IteratorRandom},
+    seq::IteratorRandom,
     thread_rng,
 };
 
-use crate::typewriter::Challenge;
+
 
 
 //He (subject) obtained (verb) his degree (object

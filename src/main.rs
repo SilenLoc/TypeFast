@@ -19,7 +19,7 @@ fn main() -> eframe::Result<()> {
         drag_and_drop_support: true,
         icon_data: None,
         initial_window_pos: None,
-        initial_window_size: Option::from(egui::Vec2::new(1000 as f32, 1000 as f32)),
+        initial_window_size: Option::from(egui::Vec2::new(1000_f32, 1000_f32)),
         min_window_size: None,
         max_window_size: None,
         resizable: true,
