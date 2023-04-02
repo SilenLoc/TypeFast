@@ -14,5 +14,5 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: extractions/setup-just@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.REL }}
       - run: just verify
