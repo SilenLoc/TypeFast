@@ -31,7 +31,7 @@
         {
           "assets": [
             {
-              "path": "target/release/TypeFast"
+              "path": "target/release/type_fast"
             }
           ],
           "successComment": ":tada: new version is [${nextRelease.version}](<github_release_url>) :tada:"
