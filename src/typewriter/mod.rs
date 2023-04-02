@@ -1,23 +1,14 @@
 use egui::{RichText, Ui};
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(serde::Deserialize, serde::Serialize, Default)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TypeState {
     input: String,
     challenge: String,
 }
 
-impl Default for TypeState {
-    fn default() -> Self {
-        Self {
-            input: Default::default(),
-            challenge: Default::default(),
-        }
-    }
-}
-
 pub trait Challenge {
-    fn into_challenge(&self) -> String;
+    fn to_challenge(&self) -> String;
 }
 
 impl TypeState {
@@ -26,7 +17,7 @@ impl TypeState {
         if self.input.eq(&self.challenge) {
             self.challenge.clear();
             self.input.clear();
-            self.challenge = provider.into_challenge();
+            self.challenge = provider.to_challenge();
         }
 
         let challenge_text = RichText::new(self.challenge.to_string()).size(45.0);

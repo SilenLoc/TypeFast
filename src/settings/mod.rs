@@ -1,6 +1,6 @@
 use egui::Ui;
 
-use crate::random::{random_english_words, random_letters, random_english_sentences};
+use crate::random::{random_english_sentences, random_english_words, random_letters};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
@@ -12,16 +12,16 @@ pub struct TFSetting {
 
 #[derive(serde::Deserialize, serde::Serialize, PartialEq, Eq)]
 pub enum Level {
-    RandomLetters,
-    RandomEnglishWords,
-    RandomEnglishSentences,
+    Letters,
+    EnglishWords,
+    EnglishSentences,
 }
 
 impl Default for TFSetting {
     fn default() -> Self {
         Self {
             command: Default::default(),
-            level: Level::RandomLetters,
+            level: Level::Letters,
             size: 2,
         }
     }
@@ -30,19 +30,19 @@ impl Default for TFSetting {
 impl TFSetting {
     pub fn process_command(&mut self, _ui: &mut Ui, _ctx: &egui::Context) {
         let command = self.command.clone();
-        if self.command.contains(";") {
+        if self.command.contains(';') {
             self.command.clear();
         }
 
         if command.contains("level") {
             if command.contains("letters") {
-                self.change_level(Level::RandomLetters);
+                self.change_level(Level::Letters);
             }
             if command.contains("words") {
-                self.change_level(Level::RandomEnglishWords);
+                self.change_level(Level::EnglishWords);
             }
             if command.contains("sentences") {
-                self.change_level(Level::RandomEnglishSentences);
+                self.change_level(Level::EnglishSentences);
             }
         }
     }
@@ -51,7 +51,7 @@ impl TFSetting {
         if ui.button("level letters").clicked() {
             self.command = "level letters;".into();
         }
-        
+
         if ui.button("level words").clicked() {
             self.command = "level words;".into();
         }
@@ -65,9 +65,9 @@ impl TFSetting {
 
     pub fn provide_next_string(&self) -> String {
         match self.level {
-            Level::RandomLetters => random_letters(self.size),
-            Level::RandomEnglishWords => random_english_words(self.size),
-            Level::RandomEnglishSentences => random_english_sentences(self.size)
+            Level::Letters => random_letters(self.size),
+            Level::EnglishWords => random_english_words(self.size),
+            Level::EnglishSentences => random_english_sentences(self.size),
         }
     }
 

@@ -1,10 +1,4 @@
-use rand::{
-    seq::IteratorRandom,
-    thread_rng,
-};
-
-
-
+use rand::{seq::IteratorRandom, thread_rng};
 
 //He (subject) obtained (verb) his degree (object
 
@@ -18,7 +12,7 @@ fn random_sub() -> Option<String> {
 
 fn random_verb() -> Option<String> {
     let mut rng = thread_rng();
-    let subs = ["plays", "run", "shoot",];
+    let subs = ["plays", "run", "shoot"];
     let sample = subs.iter().choose(&mut rng);
 
     sample.map(|s| s.to_owned().to_owned())
@@ -138,24 +132,22 @@ fn random_object() -> Option<String> {
         "teacher",
         "communication",
         "night",
-        "chemistry", 
+        "chemistry",
         "run",
-        "shoot", 
+        "shoot",
         "They",
-        ];
+    ];
     let sample = subs.iter().choose(&mut rng);
 
     sample.map(|s| s.to_owned().to_owned())
 }
 
-
-pub fn random_sentence()-> String {
+pub fn random_sentence() -> String {
     let sub = random_sub().unwrap_or("".into());
     let verb = random_verb().unwrap_or("".into());
     let object = random_object().unwrap_or("".into());
-    sub + " " + &verb + " " + &object  + "." + " "
+    sub + " " + &verb + " " + &object + "." + " "
 }
-
 
 #[cfg(test)]
 mod tests {
