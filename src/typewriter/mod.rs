@@ -32,20 +32,5 @@ impl TypeState {
             self.challenge.clear();
             self.input.clear();
         }
-
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
-        ui.label("");
     }
 }

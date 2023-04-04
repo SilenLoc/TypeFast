@@ -24,21 +24,23 @@ impl TypeFastApp {
 
 impl eframe::App for TypeFastApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::TopBottomPanel::bottom("bottom_panel_0").show(ctx, |ui| {
-            ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
-                ui.text_edit_singleline(&mut self.settings.command);
-
-                TFSetting::process_command(&mut self.settings, ui, ctx);
-
-                ui.horizontal(|ui| {
-                    TFSetting::command_helpers(&mut self.settings, ui);
-                });
-            });
-        });
-
         egui::CentralPanel::default().show(ctx, |ui| {
             self.type_state
-                .render(ui, self.settings.provide_next_string().as_str())
+                .render(ui, self.settings.provide_next_string().as_str());
+            ui.label("");
+            TFSetting::render_state(&self.settings, ui, ctx);
+            ui.label("");
+            ui.collapsing("Settings", |ui| {
+                ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
+                    ui.text_edit_singleline(&mut self.settings.command);
+
+                    TFSetting::process_command(&mut self.settings, ui, ctx);
+
+                    ui.horizontal(|ui| {
+                        TFSetting::command_helpers(&mut self.settings, ui);
+                    });
+                })
+            });
         });
     }
 
