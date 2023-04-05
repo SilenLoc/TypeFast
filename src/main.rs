@@ -5,6 +5,7 @@ use crate::app::TypeFastApp;
 
 mod app;
 mod random;
+mod scoring;
 mod settings;
 mod typewriter;
 

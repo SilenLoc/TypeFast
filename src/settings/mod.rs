@@ -26,6 +26,16 @@ impl Level {
             Level::EnglishSentences => "English sentences",
         }
     }
+
+    pub fn score(&self, size: u32) -> u32 {
+        let modifier = match self {
+            Level::Letters => 1,
+            Level::EnglishWords => 3,
+            Level::EnglishSentences => 5,
+        };
+
+        modifier * size
+    }
 }
 
 impl Default for TFSetting {
@@ -41,9 +51,8 @@ impl Default for TFSetting {
 
 impl TFSetting {
     pub fn render_state(&self, ui: &mut Ui, _ctx: &egui::Context) {
-        ui.separator();
         ui.collapsing("Current", |ui| {
-            ui.horizontal_wrapped(|ui| {
+            ui.horizontal_top(|ui| {
                 ui.label("|-|");
                 ui.label("last command");
                 ui.label(self.last_command.clone());
@@ -53,6 +62,7 @@ impl TFSetting {
                 ui.label("|-|");
                 ui.label("size");
                 ui.label(format!("{}", self.size));
+                ui.label("|-|");
             });
         });
     }

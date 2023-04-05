@@ -1,4 +1,5 @@
 use crate::{
+    scoring::Score,
     settings::TFSetting,
     typewriter::{Challenge, TypeState},
 };
@@ -9,6 +10,7 @@ use crate::{
 pub struct TypeFastApp {
     settings: TFSetting,
     type_state: TypeState,
+    score: Score,
 }
 
 impl TypeFastApp {
@@ -17,7 +19,6 @@ impl TypeFastApp {
         if let Some(storage) = cc.storage {
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         }
-
         Default::default()
     }
 }
@@ -25,17 +26,23 @@ impl TypeFastApp {
 impl eframe::App for TypeFastApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.type_state
-                .render(ui, self.settings.provide_next_string().as_str());
+            self.type_state.render(
+                ui,
+                &mut self.score,
+                &self.settings,
+                self.settings.provide_next_string().as_str(),
+            );
             ui.label("");
+            self.score.render_scoring(ui);
+        });
+
+        egui::SidePanel::right("settings_panel").show(ctx, |ui| {
             TFSetting::render_state(&self.settings, ui, ctx);
             ui.label("");
             ui.collapsing("Settings", |ui| {
                 ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
                     ui.text_edit_singleline(&mut self.settings.command);
-
                     TFSetting::process_command(&mut self.settings, ui, ctx);
-
                     ui.horizontal(|ui| {
                         TFSetting::command_helpers(&mut self.settings, ui);
                     });
