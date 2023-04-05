@@ -1,51 +1,58 @@
-use rand::Rng;
+use self::{
+    letters::random_letters_inner, sentences::random_english_sentences, symbols::random_symbols,
+    words::random_english_words,
+};
 
-use self::sentences::random_sentence;
+mod letters;
+mod sentences;
+mod symbols;
+mod words;
 
-pub mod sentences;
-
-pub fn random_letters(max: u32) -> String {
-    let mut rng = rand::thread_rng();
-    let mut s: String = "".into();
-    for _i in 0..max {
-        let letter: char = rng.gen_range(b'A'..=b'Z') as char;
-        let manipulated = big_small_space(letter);
-        s.push(manipulated)
-    }
-    s.trim().to_string()
+#[derive(Clone, Copy)]
+pub struct Algorithm {
+    pub id: &'static str,
+    pub version: &'static str,
+    pub description: &'static str,
+    pub lang: &'static str,
+    pub out_size: &'static u32,
+    pub random_function: &'static dyn Fn(u32) -> String,
 }
 
-fn big_small_space(letter: char) -> char {
-    let mut rng = rand::thread_rng();
-    let lr = rng.gen_range(0..3);
-    match lr {
-        0 => letter,
-        1 => {
-            let chars: Vec<char> = letter.to_lowercase().to_string().chars().collect();
-            chars[0]
-        }
-        2 => ' ',
-        _ => letter,
-    }
-}
+pub const ALGS: [Algorithm; 4] = [
+    Algorithm {
+        id: "letters",
+        version: "0.1",
+        description: "some letters :)",
+        lang: "human",
+        out_size: &1,
+        random_function: &random_letters_inner,
+    },
+    Algorithm {
+        id: "words",
+        version: "0.1",
+        description: "some english words",
+        lang: "eng",
+        out_size: &2,
+        random_function: &random_english_words,
+    },
+    Algorithm {
+        id: "sentences",
+        version: "0.1",
+        description: "some english sentences",
+        lang: "eng",
+        out_size: &3,
+        random_function: &random_english_sentences,
+    },
+    Algorithm {
+        id: "symbols",
+        version: "0.1",
+        description: "some symbols",
+        lang: "well not really human",
+        out_size: &2,
+        random_function: &random_symbols,
+    },
+];
 
-pub fn random_english_words(max: u32) -> String {
-    let mut random_words = String::new();
-    for _i in 0..max {
-        random_words.push_str(random_word::gen());
-        random_words.push_str(&' '.to_string());
-    }
-
-    random_words.trim_end().into()
-}
-
-pub fn random_english_sentences(max: u32) -> String {
-    let mut new_string = String::new();
-    let new_max = if max > 20 { max / 2 } else { max };
-
-    for _i in 0..new_max {
-        new_string.push_str(&random_sentence());
-    }
-
-    new_string.trim().into()
+pub fn none(_max: u32) -> String {
+    "this algorithm does not exist".to_owned()
 }

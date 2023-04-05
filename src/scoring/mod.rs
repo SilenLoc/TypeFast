@@ -13,6 +13,6 @@ impl Score {
     }
 
     pub fn won(&mut self, settings: &TFSetting) {
-        self.score += settings.level.score(settings.size) as u128;
+        self.score += (settings.level.out_size * settings.size) as u128;
     }
 }

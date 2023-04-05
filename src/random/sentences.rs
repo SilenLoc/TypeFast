@@ -2,6 +2,17 @@ use rand::{seq::IteratorRandom, thread_rng};
 
 //He (subject) obtained (verb) his degree (object
 
+pub fn random_english_sentences(max: u32) -> String {
+    let mut new_string = String::new();
+    let new_max = if max > 20 { max / 2 } else { max };
+
+    for _i in 0..new_max {
+        new_string.push_str(&random_sentence());
+    }
+
+    new_string.trim().into()
+}
+
 fn random_sub() -> Option<String> {
     let mut rng = thread_rng();
     let subs = ["He", "She", "I", "They", "We"];

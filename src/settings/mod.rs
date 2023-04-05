@@ -1,48 +1,22 @@
 use egui::Ui;
 
-use crate::random::{random_english_sentences, random_english_words, random_letters};
+use crate::random::{none, Algorithm, ALGS};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 pub struct TFSetting {
     pub command: String,
-    pub level: Level,
+    #[serde(skip)]
+    pub level: Algorithm,
     pub size: u32,
     last_command: String,
-}
-
-#[derive(serde::Deserialize, serde::Serialize, PartialEq, Eq)]
-pub enum Level {
-    Letters,
-    EnglishWords,
-    EnglishSentences,
-}
-
-impl Level {
-    fn as_str(&self) -> &'static str {
-        match self {
-            Level::Letters => "Letters",
-            Level::EnglishWords => "English words",
-            Level::EnglishSentences => "English sentences",
-        }
-    }
-
-    pub fn score(&self, size: u32) -> u32 {
-        let modifier = match self {
-            Level::Letters => 1,
-            Level::EnglishWords => 3,
-            Level::EnglishSentences => 5,
-        };
-
-        modifier * size
-    }
 }
 
 impl Default for TFSetting {
     fn default() -> Self {
         Self {
             command: Default::default(),
-            level: Level::Letters,
+            level: ALGS[0],
             size: 2,
             last_command: Default::default(),
         }
@@ -58,7 +32,7 @@ impl TFSetting {
                 ui.label(self.last_command.clone());
                 ui.label("|-|");
                 ui.label("level");
-                ui.label(self.level.as_str());
+                ui.label(self.level.description);
                 ui.label("|-|");
                 ui.label("size");
                 ui.label(format!("{}", self.size));
@@ -75,29 +49,28 @@ impl TFSetting {
         }
 
         if command.contains("level") {
-            if command.contains("letters;") {
-                self.change_level(Level::Letters);
-            }
-            if command.contains("words;") {
-                self.change_level(Level::EnglishWords);
-            }
-            if command.contains("sentences;") {
-                self.change_level(Level::EnglishSentences);
-            }
+            let new_level = match ALGS.into_iter().find(|alg| command.contains(alg.id)) {
+                Some(alg) => alg,
+                None => Algorithm {
+                    id: "None",
+                    version: "0",
+                    description: "this algorithm does not exist",
+                    lang: "mhh",
+                    out_size: &0,
+                    random_function: &none,
+                },
+            };
+            self.change_level(new_level)
         }
     }
+
     pub fn command_helpers(&mut self, ui: &mut Ui) {
         ui.spacing_mut().item_spacing.x = 0.5;
-        if ui.button("level letters").clicked() {
-            self.command = "level letters".into();
-        }
 
-        if ui.button("level words").clicked() {
-            self.command = "level words".into();
-        }
-
-        if ui.button("level sentences").clicked() {
-            self.command = "level sentences".into();
+        for alg in ALGS {
+            if ui.button(alg.description).clicked() {
+                self.command = "level".to_owned() + " " + alg.id
+            }
         }
 
         if ui.button("run command").clicked() {
@@ -107,16 +80,14 @@ impl TFSetting {
         ui.add(egui::DragValue::new(&mut self.size));
     }
 
+    #[allow(clippy::let_and_return)]
     pub fn provide_next_string(&self) -> String {
-        match self.level {
-            Level::Letters => random_letters(self.size),
-            Level::EnglishWords => random_english_words(self.size),
-            Level::EnglishSentences => random_english_sentences(self.size),
-        }
+        let next = (self.level.random_function)(self.size);
+        next
     }
 
-    pub fn change_level(&mut self, new_level: Level) {
-        if !self.level.eq(&new_level) {
+    pub fn change_level(&mut self, new_level: Algorithm) {
+        if !self.level.id.eq(new_level.id) {
             self.size = 2;
         }
         self.level = new_level
