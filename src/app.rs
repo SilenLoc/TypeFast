@@ -4,9 +4,8 @@ use crate::{
     typewriter::{Challenge, TypeState},
 };
 
-/// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize, Default)]
-#[serde(default)] // if we add new fields, give them default values when deserializing old state
+#[serde(default)]
 pub struct TypeFastApp {
     settings: TFSetting,
     type_state: TypeState,
@@ -14,7 +13,6 @@ pub struct TypeFastApp {
 }
 
 impl TypeFastApp {
-    /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         if let Some(storage) = cc.storage {
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
@@ -37,12 +35,12 @@ impl eframe::App for TypeFastApp {
         });
 
         egui::SidePanel::right("settings_panel").show(ctx, |ui| {
-            TFSetting::render_state(&self.settings, ui, ctx);
+            TFSetting::render_state(&self.settings, ui);
             ui.label("");
             ui.collapsing("Settings", |ui| {
                 ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
                     ui.text_edit_singleline(&mut self.settings.command);
-                    TFSetting::process_command(&mut self.settings, ui, ctx);
+                    TFSetting::process_command(&mut self.settings);
                     ui.horizontal(|ui| {
                         TFSetting::command_helpers(&mut self.settings, ui);
                     });

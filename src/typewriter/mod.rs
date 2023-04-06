@@ -3,7 +3,7 @@ use egui::{RichText, Ui};
 use crate::{scoring::Score, settings::TFSetting};
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
-#[serde(default)] // if we add new fields, give them default values when deserializing old state
+#[serde(default)]
 pub struct TypeState {
     input: String,
     challenge: String,

@@ -3,28 +3,28 @@ use egui::Ui;
 use crate::random::{none, Algorithm, ALGS};
 
 #[derive(serde::Deserialize, serde::Serialize)]
-#[serde(default)] // if we add new fields, give them default values when deserializing old state
+#[serde(default)]
 pub struct TFSetting {
     pub command: String,
+    last_command: String,
     #[serde(skip)]
     pub level: Algorithm,
     pub size: u32,
-    last_command: String,
 }
 
 impl Default for TFSetting {
     fn default() -> Self {
         Self {
             command: Default::default(),
+            last_command: Default::default(),
             level: ALGS[0],
             size: 2,
-            last_command: Default::default(),
         }
     }
 }
 
 impl TFSetting {
-    pub fn render_state(&self, ui: &mut Ui, _ctx: &egui::Context) {
+    pub fn render_state(&self, ui: &mut Ui) {
         ui.collapsing("Current", |ui| {
             ui.horizontal_top(|ui| {
                 ui.label("|-|");
@@ -41,7 +41,7 @@ impl TFSetting {
         });
     }
 
-    pub fn process_command(&mut self, _ui: &mut Ui, _ctx: &egui::Context) {
+    pub fn process_command(&mut self) {
         let command = self.command.clone();
         if self.command.contains(';') {
             self.last_command = command.clone();
@@ -91,5 +91,70 @@ impl TFSetting {
             self.size = 2;
         }
         self.level = new_level
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    fn create_alg_1() -> Algorithm {
+        Algorithm {
+            id: "one",
+            version: "",
+            description: "",
+            lang: "",
+            out_size: &3,
+            random_function: &none,
+        }
+    }
+
+    fn create_alg_2() -> Algorithm {
+        Algorithm {
+            id: "two",
+            version: "",
+            description: "",
+            lang: "",
+            out_size: &3,
+            random_function: &none,
+        }
+    }
+
+    #[test]
+    fn should_change_level_and_reset_size_if_different_algorithm() {
+        let mut settings = TFSetting {
+            size: 500,
+            ..Default::default()
+        };
+
+        let alg1 = create_alg_1();
+        settings.change_level(alg1);
+        assert_eq!(settings.size, 2);
+
+        settings.size = 400;
+
+        let alg2 = create_alg_2();
+        settings.change_level(alg2);
+        assert_eq!(settings.size, 2);
+    }
+
+    #[test]
+    fn should_change_level_and_not_reset_size_if_same_algorithm() {
+        let mut settings = TFSetting {
+            size: 500,
+            level: create_alg_1(),
+            ..Default::default()
+        };
+
+        let alg1 = create_alg_1();
+        settings.change_level(alg1);
+        assert_eq!(settings.size, 500);
+
+        settings.size = 400;
+
+        let alg2 = create_alg_1();
+        settings.change_level(alg2);
+        assert_eq!(settings.size, 400);
     }
 }
