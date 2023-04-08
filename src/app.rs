@@ -23,18 +23,17 @@ impl TypeFastApp {
 
 impl eframe::App for TypeFastApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            self.type_state.render(
-                ui,
-                &mut self.score,
-                &self.settings,
-                self.settings.provide_next_string().as_str(),
-            );
-            ui.label("");
-            self.score.render_scoring(ui);
-        });
+        catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
 
-        egui::SidePanel::right("settings_panel").show(ctx, |ui| {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            ui.label("");
             TFSetting::render_state(&self.settings, ui);
             ui.label("");
             ui.collapsing("Settings", |ui| {
@@ -46,6 +45,18 @@ impl eframe::App for TypeFastApp {
                     });
                 })
             });
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            ui.label("");
+            self.type_state.render(
+                ui,
+                &mut self.score,
+                &self.settings,
+                self.settings.provide_next_string().as_str(),
+            );
+            ui.label("");
+            self.score.render_scoring(ui);
         });
     }
 
