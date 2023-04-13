@@ -26,37 +26,31 @@ impl eframe::App for TypeFastApp {
         catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            TFSetting::render_state(&self.settings, ui);
-            ui.label("");
-            ui.collapsing("Settings", |ui| {
-                ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
-                    ui.text_edit_singleline(&mut self.settings.command);
-                    TFSetting::process_command(&mut self.settings);
-                    ui.horizontal(|ui| {
-                        TFSetting::command_helpers(&mut self.settings, ui);
-                    });
-                })
-            });
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            ui.label("");
-            self.type_state.render(
-                ui,
-                &mut self.score,
-                &self.settings,
-                self.settings.provide_next_string().as_str(),
-            );
-            ui.label("");
-            self.score.render_scoring(ui);
+            egui::ScrollArea::vertical()
+                .id_source("all")
+                .show(ui, |ui| {
+                    self.type_state.render(
+                        ui,
+                        &mut self.score,
+                        &self.settings,
+                        self.settings.provide_next_string().as_str(),
+                    );
+                    ui.label("");
+                    self.score.render_scoring(ui);
+                    ui.horizontal_centered(|ui| {
+                        TFSetting::render_state(&self.settings, ui);
+                        ui.collapsing("Settings", |ui| {
+                            ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
+                                egui::ScrollArea::vertical()
+                                    .id_source("settings")
+                                    .show(ui, |ui| {
+                                        TFSetting::process_command(&mut self.settings);
+                                        TFSetting::command_helpers(&mut self.settings, ui);
+                                    });
+                            })
+                        });
+                    })
+                });
         });
     }
 

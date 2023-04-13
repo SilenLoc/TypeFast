@@ -23,7 +23,7 @@ pub const ALGS: [Algorithm; 4] = [
         id: "letters",
         version: "0.1",
         description: "some letters :)",
-        lang: "human",
+        lang: "western",
         out_size: &1,
         random_function: &random_letters_inner,
     },

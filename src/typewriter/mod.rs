@@ -36,10 +36,12 @@ impl TypeState {
         ui.heading(input_text);
 
         ui.separator();
-        ui.text_edit_multiline(&mut self.input);
-        if ui.button("new").clicked() {
-            self.challenge = provider.to_challenge();
-            self.input.clear();
-        }
+        ui.horizontal(|ui| {
+            ui.text_edit_multiline(&mut self.input);
+            if ui.button("new").clicked() {
+                self.challenge = provider.to_challenge();
+                self.input.clear();
+            }
+        });
     }
 }

@@ -1,6 +1,11 @@
 use egui::Ui;
 
+mod command_helper_render;
+mod level_render;
+
 use crate::random::{none, Algorithm, ALGS};
+
+use self::level_render::render_alg;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -26,18 +31,7 @@ impl Default for TFSetting {
 impl TFSetting {
     pub fn render_state(&self, ui: &mut Ui) {
         ui.collapsing("Current", |ui| {
-            ui.horizontal_top(|ui| {
-                ui.label("|-|");
-                ui.label("last command");
-                ui.label(self.last_command.clone());
-                ui.label("|-|");
-                ui.label("level");
-                ui.label(self.level.description);
-                ui.label("|-|");
-                ui.label("size");
-                ui.label(format!("{}", self.size));
-                ui.label("|-|");
-            });
+            render_alg(&self.level, ui);
         });
     }
 
@@ -65,19 +59,7 @@ impl TFSetting {
     }
 
     pub fn command_helpers(&mut self, ui: &mut Ui) {
-        ui.spacing_mut().item_spacing.x = 0.5;
-
-        for alg in ALGS {
-            if ui.button(alg.description).clicked() {
-                self.command = "level".to_owned() + " " + alg.id
-            }
-        }
-
-        if ui.button("run command").clicked() {
-            self.command.push(';');
-        }
-
-        ui.add(egui::DragValue::new(&mut self.size));
+        command_helper_render::render_commands(self, ui)
     }
 
     #[allow(clippy::let_and_return)]
