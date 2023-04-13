@@ -16,10 +16,31 @@ use crate::{
 pub struct TFSetting {
     pub command: String,
     last_command: String,
+    theme: TFTheme,
     #[serde(skip)]
     pub level: Algorithm,
     pub size: u32,
     level_changed: bool,
+}
+
+#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq)]
+
+pub enum TFTheme {
+    Macchiato,
+    Frappe,
+    Latte,
+    Mocha,
+}
+
+impl TFTheme {
+    pub fn to_cat_theme(&self) -> catppuccin_egui::Theme {
+        match self {
+            TFTheme::Macchiato => catppuccin_egui::MACCHIATO,
+            TFTheme::Frappe => catppuccin_egui::FRAPPE,
+            TFTheme::Latte => catppuccin_egui::LATTE,
+            TFTheme::Mocha => catppuccin_egui::MOCHA,
+        }
+    }
 }
 
 impl Default for TFSetting {
@@ -30,15 +51,16 @@ impl Default for TFSetting {
             level: ALGS[0],
             size: 2,
             level_changed: false,
+            theme: TFTheme::Macchiato,
         }
     }
 }
 
 impl TFSetting {
-    pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui) {
+    pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui, ctx: &egui::Context) {
         ui.horizontal_centered(|ui| {
             level_render::render(&self.level, ui);
-            self.render_commands(services, ui);
+            self.render_settings(services, ui, ctx);
         });
     }
 
@@ -48,7 +70,7 @@ impl TFSetting {
         old
     }
 
-    pub fn render_commands(&mut self, services: &mut Services, ui: &mut Ui) {
+    pub fn render_settings(&mut self, services: &mut Services, ui: &mut Ui, ctx: &egui::Context) {
         self.process_command(services);
 
         ui.collapsing("Settings", |ui| {
@@ -56,9 +78,28 @@ impl TFSetting {
             ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
                 egui::ScrollArea::vertical()
                     .id_source("settings")
-                    .show(ui, |ui| command_helper_render::render(self, ui));
+                    .show(ui, |ui| {
+                        command_helper_render::render(self, ui);
+                        ui.add_space(10.0);
+                        self.render_theme_choose(ui, ctx);
+                    });
             });
         });
+    }
+
+    fn render_theme_choose(&mut self, ui: &mut Ui, ctx: &egui::Context) {
+        egui::ComboBox::from_label("Theme")
+            .selected_text(format!("{:?}", self.theme))
+            .show_ui(ui, |ui| {
+                ui.style_mut().wrap = Some(false);
+                ui.set_min_width(60.0);
+                ui.selectable_value(&mut self.theme, TFTheme::Macchiato, "Macchiato");
+                ui.selectable_value(&mut self.theme, TFTheme::Frappe, "Frappe");
+                ui.selectable_value(&mut self.theme, TFTheme::Latte, "Latte");
+                ui.selectable_value(&mut self.theme, TFTheme::Mocha, "Mocha");
+            });
+
+        catppuccin_egui::set_theme(ctx, self.theme.to_cat_theme());
     }
 
     pub fn notify_help(&mut self, text: &str) {

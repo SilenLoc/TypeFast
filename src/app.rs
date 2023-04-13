@@ -32,8 +32,6 @@ impl TypeFastApp {
 
 impl eframe::App for TypeFastApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
-
         egui::CentralPanel::default().show(ctx, |ui| {
             egui::ScrollArea::vertical()
                 .id_source("all")
@@ -43,7 +41,7 @@ impl eframe::App for TypeFastApp {
 
                     self.score.render_scoring(ui);
 
-                    self.settings.render(&mut self.services, ui);
+                    self.settings.render(&mut self.services, ui, ctx);
                 });
             self.services.notifier.show(ctx);
         });
