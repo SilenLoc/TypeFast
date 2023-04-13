@@ -20,7 +20,7 @@ Some ideas:
 - styling
 - new ways to show the current challenge
 - wording in the code and user interface
-- make challanges more performant
+- make challenges more performant
 
 
 [1]: https://github.com/SilenLoc/TypeFast/blob/main/src/random/mod.rs
