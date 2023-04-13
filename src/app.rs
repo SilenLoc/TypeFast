@@ -1,3 +1,5 @@
+use egui_notify::Toasts;
+
 use crate::{
     scoring::Score,
     settings::TFSetting,
@@ -10,6 +12,13 @@ pub struct TypeFastApp {
     settings: TFSetting,
     type_state: TypeState,
     score: Score,
+    #[serde(skip)]
+    services: Services,
+}
+
+#[derive(Default)]
+pub struct Services {
+    pub notifier: Toasts,
 }
 
 impl TypeFastApp {
@@ -29,28 +38,14 @@ impl eframe::App for TypeFastApp {
             egui::ScrollArea::vertical()
                 .id_source("all")
                 .show(ui, |ui| {
-                    self.type_state.render(
-                        ui,
-                        &mut self.score,
-                        &self.settings,
-                        self.settings.provide_next_string().as_str(),
-                    );
-                    ui.label("");
+                    self.type_state
+                        .render(ui, &mut self.score, &mut self.settings);
+
                     self.score.render_scoring(ui);
-                    ui.horizontal_centered(|ui| {
-                        TFSetting::render_state(&self.settings, ui);
-                        ui.collapsing("Settings", |ui| {
-                            ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
-                                egui::ScrollArea::vertical()
-                                    .id_source("settings")
-                                    .show(ui, |ui| {
-                                        TFSetting::process_command(&mut self.settings);
-                                        TFSetting::command_helpers(&mut self.settings, ui);
-                                    });
-                            })
-                        });
-                    })
+
+                    self.settings.render(&mut self.services, ui);
                 });
+            self.services.notifier.show(ctx);
         });
     }
 

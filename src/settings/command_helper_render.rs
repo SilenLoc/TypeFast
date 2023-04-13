@@ -4,40 +4,42 @@ use egui_extras::{Column, TableBuilder};
 use super::TFSetting;
 use crate::random::ALGS;
 
-pub fn render_commands(st: &mut TFSetting, ui: &mut Ui) {
-    TableBuilder::new(ui)
-        .auto_shrink([true, true])
-        .column(Column::exact(100.0))
-        .column(Column::exact(150.0))
-        .header(20.0, |mut header| {
-            header.col(|ui| {
-                ui.heading("Challenge");
-            });
-
-            header.col(|ui| {
-                ui.heading("Actions");
-            });
-        })
-        .body(|mut body| {
-            for alg in ALGS {
-                body.row(50.0, |mut row| {
-                    row.col(|ui| {
-                        ui.label(alg.description);
+pub fn render(st: &mut TFSetting, ui: &mut Ui) {
+    ui.horizontal_top(|ui| {
+        ui.vertical(|ui| {
+            TableBuilder::new(ui)
+                .auto_shrink([true, true])
+                .column(Column::exact(150.0))
+                .header(20.0, |mut header| {
+                    header.col(|ui| {
+                        ui.label("Challenges");
                     });
-
-                    row.col(|ui| {
-                        ui.horizontal(|ui| {
-                            if ui.button("use").clicked() {
-                                st.command = "level".to_owned() + " " + alg.id + ";"
-                            }
+                })
+                .body(|mut body| {
+                    for alg in ALGS {
+                        body.row(25.0, |mut row| {
+                            row.col(|ui| {
+                                ui.horizontal(|ui| {
+                                    ui.add_enabled_ui(st.level.id != alg.id, |ui| {
+                                        if ui.button(alg.description).clicked() {
+                                            st.command = "level".to_owned() + " " + alg.id + ";"
+                                        }
+                                    });
+                                });
+                            });
                         });
-                    });
+                    }
                 });
-            }
         });
-    ui.label("size");
-    ui.add(egui::DragValue::new(&mut st.size));
-    ui.collapsing("?", |ui| {
-        ui.label("a size of 3 with the challenge 'english words' means 3 words");
+
+        ui.horizontal(|ui| {
+            ui.label("size");
+            ui.add(egui::DragValue::new(&mut st.size));
+            if ui.button("?").clicked() {
+                st.notify_help(
+                    "size corresponds to how many letters, words or sentences etc. will be shown",
+                );
+            };
+        });
     });
 }

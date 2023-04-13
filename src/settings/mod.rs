@@ -1,11 +1,15 @@
+use std::time::Duration;
+
 use egui::Ui;
+use log::info;
 
 mod command_helper_render;
 mod level_render;
 
-use crate::random::{none, Algorithm, ALGS};
-
-use self::level_render::render_alg;
+use crate::{
+    app::Services,
+    random::{none, Algorithm, ALGS},
+};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -15,6 +19,7 @@ pub struct TFSetting {
     #[serde(skip)]
     pub level: Algorithm,
     pub size: u32,
+    level_changed: bool,
 }
 
 impl Default for TFSetting {
@@ -24,19 +29,45 @@ impl Default for TFSetting {
             last_command: Default::default(),
             level: ALGS[0],
             size: 2,
+            level_changed: false,
         }
     }
 }
 
 impl TFSetting {
-    pub fn render_state(&self, ui: &mut Ui) {
-        ui.collapsing("Current", |ui| {
-            render_alg(&self.level, ui);
+    pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui) {
+        ui.horizontal_centered(|ui| {
+            level_render::render(&self.level, ui);
+            self.render_commands(services, ui);
         });
     }
 
-    pub fn process_command(&mut self) {
+    pub fn level_changed(&mut self) -> bool {
+        let old = self.level_changed;
+        self.level_changed = false;
+        old
+    }
+
+    pub fn render_commands(&mut self, services: &mut Services, ui: &mut Ui) {
+        self.process_command(services);
+
+        ui.collapsing("Settings", |ui| {
+            ui.add_space(10.0);
+            ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
+                egui::ScrollArea::vertical()
+                    .id_source("settings")
+                    .show(ui, |ui| command_helper_render::render(self, ui));
+            });
+        });
+    }
+
+    pub fn notify_help(&mut self, text: &str) {
+        self.command = "help".to_string() + " " + text + ";";
+    }
+
+    fn process_command(&mut self, services: &mut Services) {
         let command = self.command.clone();
+
         if self.command.contains(';') {
             self.last_command = command.clone();
             self.command.clear();
@@ -56,10 +87,19 @@ impl TFSetting {
             };
             self.change_level(new_level)
         }
-    }
 
-    pub fn command_helpers(&mut self, ui: &mut Ui) {
-        command_helper_render::render_commands(self, ui)
+        if command.contains("help") {
+            info!("{}", command);
+            let info = command
+                .strip_prefix("help")
+                .and_then(|x| x.strip_suffix(';'))
+                .unwrap_or("");
+            services
+                .notifier
+                .info(info)
+                .set_closable(true)
+                .set_duration(Some(Duration::from_secs_f32(30.0)));
+        }
     }
 
     #[allow(clippy::let_and_return)]
@@ -70,9 +110,10 @@ impl TFSetting {
 
     pub fn change_level(&mut self, new_level: Algorithm) {
         if !self.level.id.eq(new_level.id) {
+            self.level_changed = true;
             self.size = 2;
+            self.level = new_level
         }
-        self.level = new_level
     }
 }
 

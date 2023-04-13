@@ -14,18 +14,17 @@ pub trait Challenge {
 }
 
 impl TypeState {
-    pub fn render(
-        &mut self,
-        ui: &mut Ui,
-        score: &mut Score,
-        settings: &TFSetting,
-        provider: &(impl Challenge + ?Sized),
-    ) {
+    pub fn render(&mut self, ui: &mut Ui, score: &mut Score, settings: &mut TFSetting) {
+        if settings.level_changed() {
+            self.challenge = settings.provide_next_string().to_challenge();
+            self.input.clear();
+        }
+
         //win condition
         if self.input.eq(&self.challenge) {
             self.challenge.clear();
             self.input.clear();
-            self.challenge = provider.to_challenge();
+            self.challenge = settings.provide_next_string().to_challenge();
             score.won(settings)
         }
 
@@ -36,10 +35,10 @@ impl TypeState {
         ui.heading(input_text);
 
         ui.separator();
-        ui.horizontal(|ui| {
+        ui.horizontal_top(|ui| {
             ui.text_edit_multiline(&mut self.input);
             if ui.button("new").clicked() {
-                self.challenge = provider.to_challenge();
+                self.challenge = settings.provide_next_string().to_challenge();
                 self.input.clear();
             }
         });
