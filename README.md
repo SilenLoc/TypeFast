@@ -1,4 +1,4 @@
-# TypeFast
+# TypeFast (Alpha)
 A typing practice tool
 
 It is intended to be extensible by more and more challenges.
@@ -22,5 +22,13 @@ Some ideas:
 - wording in the code and user interface
 - make challenges more performant
 
+Roadmap:
+
+- Running on Native and Web
+- Minimalistic UI
+- Your own Themes
+- 20 different Challenges
+- Scoring system
+- Challenge Statistics
 
 [1]: https://github.com/SilenLoc/TypeFast/blob/main/src/random/mod.rs
