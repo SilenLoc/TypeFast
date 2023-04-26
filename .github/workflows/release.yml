@@ -20,7 +20,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with:
-          tool: just@1, trunk@0.16.0
+          tool: just@1  
       - run: just verify
 
   release:

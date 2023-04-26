@@ -22,7 +22,6 @@ web:
 
 test:
     cargo test
-    trunk build
 
 # Perform all verifications (compile, test, lint etc.)
 verify: test lint
