@@ -3,6 +3,8 @@ A typing practice tool
 
 It is intended to be extensible by more and more challenges.
 
+The online version is at https://silenloc.github.io/TypeFast/
+
 If you want to contribute new challenges have a look at the [random module][1]
 
 Changing current challenges should be done by increasing the version in the Challenge (named Algorithm in code) after changing the corresponding function.
@@ -24,7 +26,6 @@ Some ideas:
 
 Roadmap:
 
-- Running on Native and Web
 - Minimalistic UI
 - Your own Themes
 - 20 different Challenges
