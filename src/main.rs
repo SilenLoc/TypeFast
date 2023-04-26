@@ -9,6 +9,26 @@ mod scoring;
 mod settings;
 mod typewriter;
 
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    console_error_panic_hook::set_once();
+
+    tracing_wasm::set_as_global_default();
+
+    let web_options = eframe::WebOptions::default();
+
+    wasm_bindgen_futures::spawn_local(async {
+        eframe::start_web(
+            "type_fast",
+            web_options,
+            Box::new(|cc| Box::new(TypeFastApp::new(cc))),
+        )
+        .await
+        .expect("failed to start eframe");
+    });
+}
+
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result<()> {
     tracing_subscriber::fmt::init();
 
