@@ -6,12 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <head>
-    <!-- change this to your project name -->
+    
     <title>type_fast</title>
 
     <!-- config for our rust wasm binary. go to https://trunkrs.dev/assets/#rust for more customization -->
-    <link data-trunk rel="rust" data-wasm-opt="2" />
-    <!-- this is the base url relative to which other urls will be constructed. trunk will insert this from the public-url option -->
+    <link data-trunk rel="rust" data-wasm-opt="4" />
+    
     <base data-trunk-public-url />
 
     <link data-trunk rel="icon" href="assets/favicon.ico">
@@ -39,7 +39,7 @@
         body {
             /* Light mode background color for what is not covered by the egui canvas,
             or where the egui canvas is translucent. */
-            background: #909090;
+            background: #404040;
         }
 
         @media (prefers-color-scheme: dark) {
