@@ -18,12 +18,9 @@ jobs:
         with:
           components: clippy, rustfmt
       - uses: Swatinem/rust-cache@v2
-      - uses: extractions/setup-just@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.REL }}
-
-      - name: Download and install Trunk binary
-        run: cargo install --locked trunk
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just@1, trunk@0.16.0
       - run: just verify
 
   release:
