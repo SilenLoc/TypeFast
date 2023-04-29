@@ -1,26 +1,29 @@
 use rand::Rng;
+use rand::prelude::Distribution;
 
 pub fn random_letters_inner(max: u32) -> String {
-    let mut rng = rand::thread_rng();
-    let mut s: String = "".into();
-    for _i in 0..max {
-        let letter: char = rng.gen_range(b'A'..=b'Z') as char;
-        let manipulated = big_small_space(letter);
-        s.push(manipulated)
-    }
+    let rng = rand::thread_rng();
+    let s: String = rng
+        .sample_iter(&Alpha)
+        .take(max.try_into().unwrap_or_default())
+        .map(char::from)
+        .collect();
     s.trim().to_owned()
 }
 
-fn big_small_space(letter: char) -> char {
-    let mut rng = rand::thread_rng();
-    let lr = rng.gen_range(0..3);
-    match lr {
-        0 => letter,
-        1 => {
-            let chars: Vec<char> = letter.to_lowercase().to_string().chars().collect();
-            chars[0]
+struct Alpha;
+
+impl Distribution<u8> for Alpha {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> u8 {
+        const RANGE: u32 = 26 + 26 + 1;
+        const GEN_ASCII_STR_CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                abcdefghijklmnopqrstuvwxyz\
+                ";
+        loop {
+            let var = rng.next_u32() >> (32 - 5);
+            if var < RANGE {
+                return GEN_ASCII_STR_CHARSET[var as usize];
+            }
         }
-        2 => ' ',
-        _ => letter,
     }
 }

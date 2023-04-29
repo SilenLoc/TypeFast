@@ -21,7 +21,7 @@ pub struct Algorithm {
 pub const ALGS: [Algorithm; 4] = [
     Algorithm {
         id: "letters",
-        version: "0.1",
+        version: "0.2",
         description: "some letters :)",
         lang: "western",
         out_size: &1,
