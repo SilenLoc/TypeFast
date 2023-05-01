@@ -7,6 +7,22 @@ use crate::{scoring::Score, settings::TFSetting};
 pub struct TypeState {
     input: String,
     challenge: String,
+    #[serde(skip)]
+    state: State,
+}
+#[derive(serde::Deserialize, serde::Serialize, Debug)]
+enum State {
+    Started,
+    Typing,
+    Won,
+    Reset,
+    None,
+}
+
+impl Default for State {
+    fn default() -> Self {
+        Self::None
+    }
 }
 
 pub trait Challenge {
@@ -16,16 +32,7 @@ pub trait Challenge {
 impl TypeState {
     pub fn render(&mut self, ui: &mut Ui, score: &mut Score, settings: &mut TFSetting) {
         if settings.level_changed() {
-            self.challenge = settings.provide_next_string().to_challenge();
-            self.input.clear();
-        }
-
-        //win condition
-        if self.input.eq(&self.challenge) {
-            self.challenge.clear();
-            self.input.clear();
-            self.challenge = settings.provide_next_string().to_challenge();
-            score.won(settings)
+            self.state = State::Reset
         }
 
         let challenge_text = RichText::new(self.challenge.to_string()).size(45.0);
@@ -35,12 +42,41 @@ impl TypeState {
         ui.heading(input_text);
 
         ui.separator();
+
         ui.horizontal_top(|ui| {
             ui.text_edit_multiline(&mut self.input);
+
             if ui.button("new").clicked() {
-                self.challenge = settings.provide_next_string().to_challenge();
-                self.input.clear();
+                self.state = State::Reset
             }
         });
+
+        match self.state {
+            State::Started => {
+                score.started_to_type();
+                self.state = State::Typing
+            }
+            State::Typing => {
+                //win condition
+                if self.input.eq(&self.challenge) && !self.input.is_empty() {
+                    self.state = State::Won;
+                }
+            }
+            State::Won => {
+                self.state = State::Reset;
+                score.won(settings);
+                score.set();
+            }
+            State::Reset => {
+                self.challenge = settings.provide_next_string().to_challenge();
+                self.input.clear();
+                self.state = State::None
+            }
+            State::None => {
+                if !self.input.is_empty() {
+                    self.state = State::Started
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
-use rand::Rng;
 use rand::prelude::Distribution;
+use rand::Rng;
 
 pub fn random_letters_inner(max: u32) -> String {
     let rng = rand::thread_rng();
