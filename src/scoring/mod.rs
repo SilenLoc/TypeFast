@@ -1,9 +1,9 @@
 use std::{
     ops::Div,
-    time::{Duration, Instant},
 };
 
 use egui::{plot::Plot, Ui};
+use web_time::{Instant, Duration};
 
 use crate::settings::TFSetting;
 use egui::plot::{Line, PlotPoints};
@@ -72,7 +72,7 @@ impl Default for ScorePerDuration {
     fn default() -> Self {
         Self {
             elapsed: Duration::from_millis(0),
-            start: Time(Instant::now()),
+            start: Time::now(),
             state: 0.0,
             avg: 0.0,
             history: vec![],
@@ -108,6 +108,7 @@ impl Time {
         Self(Instant::now())
     }
 }
+
 
 fn average(history: &Vec<f64>) -> f64 {
     history.iter().sum::<f64>() / history.len() as f64
