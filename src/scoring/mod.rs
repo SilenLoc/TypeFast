@@ -1,9 +1,7 @@
-use std::{
-    ops::Div,
-};
+use std::ops::Div;
 
 use egui::{plot::Plot, Ui};
-use web_time::{Instant, Duration};
+use web_time::{Duration, Instant};
 
 use crate::settings::TFSetting;
 use egui::plot::{Line, PlotPoints};
@@ -108,7 +106,6 @@ impl Time {
         Self(Instant::now())
     }
 }
-
 
 fn average(history: &Vec<f64>) -> f64 {
     history.iter().sum::<f64>() / history.len() as f64
