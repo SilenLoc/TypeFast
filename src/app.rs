@@ -37,13 +37,19 @@ impl eframe::App for TypeFastApp {
                 .id_source("all")
                 .show(ui, |ui| {
                     self.settings.set_new_theme(ctx);
-                    self.type_state
-                        .render(ui, &mut self.score, &mut self.settings);
+                    ui.horizontal_wrapped(|ui| {
+                        ui.vertical(|ui| {
+                            self.type_state
+                                .render(ui, &mut self.score, &mut self.settings);
+                            ui.horizontal_top(|ui| {
+                                self.score.render_scoring(ui);
 
-                    self.score.render_scoring(ui);
-
-                    self.settings.render(&mut self.services, ui, ctx);
+                                self.settings.render(&mut self.services, ui, ctx);
+                            });
+                        });
+                    });
                 });
+
             self.services.notifier.show(ctx);
         });
     }

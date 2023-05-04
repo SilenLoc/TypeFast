@@ -15,26 +15,28 @@ pub struct Score {
 
 impl Score {
     pub fn render_scoring(&mut self, ui: &mut Ui) {
-        ui.heading(format!("{}", self.score));
-        ui.horizontal_top(|ui| {
-            let score_points: PlotPoints = PlotPoints::from(self.score_plot_state.clone());
+        ui.collapsing("Statistics", |ui| {
+            ui.heading(format!("Score {}", self.score));
+            ui.vertical(|ui| {
+                let score_points: PlotPoints = PlotPoints::from(self.score_plot_state.clone());
 
-            let line = Line::new(score_points);
-            Plot::new("my_plot")
-                .auto_bounds_x()
-                .auto_bounds_y()
-                .width(400.0)
-                .height(100.0)
-                .show(ui, |plot_ui| plot_ui.line(line));
+                let line = Line::new(score_points);
+                Plot::new("my_plot")
+                    .auto_bounds_x()
+                    .auto_bounds_y()
+                    .width(400.0)
+                    .height(100.0)
+                    .show(ui, |plot_ui| plot_ui.line(line));
 
-            ui.label(format!(
-                "elapsed seconds {}",
-                self.score_per_duration.elapsed.as_secs_f64()
-            ));
-            ui.label(format!(
-                "average score per second {}",
-                self.score_per_duration.avg
-            ));
+                ui.label(format!(
+                    "elapsed seconds {}",
+                    self.score_per_duration.elapsed.as_secs_f64()
+                ));
+                ui.label(format!(
+                    "average score per second {}",
+                    self.score_per_duration.avg
+                ));
+            });
         });
     }
 

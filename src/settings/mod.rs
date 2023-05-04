@@ -62,9 +62,9 @@ impl Default for TFSetting {
 
 impl TFSetting {
     pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui, ctx: &egui::Context) {
-        ui.horizontal_centered(|ui| {
-            level_render::render(&self.level, ui);
+        ui.horizontal(|ui| {
             self.render_settings(services, ui, ctx);
+            level_render::render(&self.level, ui);
         });
     }
 
@@ -80,13 +80,9 @@ impl TFSetting {
         ui.collapsing("Settings", |ui| {
             ui.add_space(10.0);
             ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
-                egui::ScrollArea::vertical()
-                    .id_source("settings")
-                    .show(ui, |ui| {
-                        command_helper_render::render(self, ui);
-                        ui.add_space(10.0);
-                        self.render_theme_choose(ui, ctx);
-                    });
+                command_helper_render::render(self, ui);
+                ui.add_space(10.0);
+                self.render_theme_choose(ui, ctx);
             });
         });
     }
