@@ -3,7 +3,7 @@ A typing practice tool
 
 It is intended to be extensible by more and more challenges.
 
-The online version is at https://silenloc.github.io/TypeFast/
+The web version is at https://silenloc.github.io/TypeFast/
 
 If you want to contribute new challenges have a look at the [random module][1]
 
