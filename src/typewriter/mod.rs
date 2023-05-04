@@ -16,6 +16,7 @@ enum State {
     Typing,
     Won,
     Reset,
+    Initial,
     None,
 }
 
@@ -70,6 +71,10 @@ impl TypeState {
             State::Reset => {
                 self.challenge = settings.provide_next_string().to_challenge();
                 self.input.clear();
+                self.state = State::None
+            }
+            State::Initial => {
+                self.challenge = settings.provide_next_string().to_challenge();
                 self.state = State::None
             }
             State::None => {
