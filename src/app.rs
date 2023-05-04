@@ -36,6 +36,7 @@ impl eframe::App for TypeFastApp {
             egui::ScrollArea::vertical()
                 .id_source("all")
                 .show(ui, |ui| {
+                    self.settings.set_new_theme(ctx);
                     self.type_state
                         .render(ui, &mut self.score, &mut self.settings);
 

@@ -16,6 +16,7 @@ use crate::{
 pub struct TFSetting {
     pub command: String,
     last_command: String,
+    last_theme: TFTheme,
     theme: TFTheme,
     #[serde(skip)]
     pub level: Algorithm,
@@ -23,22 +24,24 @@ pub struct TFSetting {
     level_changed: bool,
 }
 
-#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Clone, Copy)]
 
 pub enum TFTheme {
     Macchiato,
     Frappe,
     Latte,
     Mocha,
+    Default,
 }
 
 impl TFTheme {
-    pub fn to_cat_theme(&self) -> catppuccin_egui::Theme {
+    pub fn to_cat_theme(self) -> catppuccin_egui::Theme {
         match self {
             TFTheme::Macchiato => catppuccin_egui::MACCHIATO,
             TFTheme::Frappe => catppuccin_egui::FRAPPE,
             TFTheme::Latte => catppuccin_egui::LATTE,
             TFTheme::Mocha => catppuccin_egui::MOCHA,
+            TFTheme::Default => catppuccin_egui::MACCHIATO,
         }
     }
 }
@@ -51,6 +54,7 @@ impl Default for TFSetting {
             level: ALGS[0],
             size: 2,
             level_changed: false,
+            last_theme: TFTheme::Default,
             theme: TFTheme::Macchiato,
         }
     }
@@ -98,8 +102,14 @@ impl TFSetting {
                 ui.selectable_value(&mut self.theme, TFTheme::Latte, "Latte");
                 ui.selectable_value(&mut self.theme, TFTheme::Mocha, "Mocha");
             });
+        self.set_new_theme(ctx);
+    }
 
-        catppuccin_egui::set_theme(ctx, self.theme.to_cat_theme());
+    pub fn set_new_theme(&mut self, ctx: &egui::Context) {
+        if self.last_theme != self.theme {
+            catppuccin_egui::set_theme(ctx, self.theme.to_cat_theme());
+            self.last_theme = self.theme
+        }
     }
 
     pub fn notify_help(&mut self, text: &str) {
