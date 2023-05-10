@@ -37,9 +37,16 @@ impl eframe::App for TypeFastApp {
                 .id_source("all")
                 .show(ui, |ui| {
                     self.settings.set_new_theme(ctx);
+
+                    //space only on web
+                    #[cfg(target_arch = "wasm32")]
                     ui.add_space(200.0);
+
                     ui.horizontal_wrapped(|ui| {
+
+                        #[cfg(target_arch = "wasm32")]
                         ui.add_space(700.0);
+
                         ui.group(|ui| {
                             ui.vertical(|ui| {
                                 self.type_state
@@ -52,7 +59,9 @@ impl eframe::App for TypeFastApp {
                             });
                         });
 
+                        #[cfg(target_arch = "wasm32")]
                         ui.add_space(300.0);
+
                     });
                 });
 
