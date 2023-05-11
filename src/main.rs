@@ -107,7 +107,7 @@ fn main() -> eframe::Result<()> {
     tracing_subscriber::fmt::init();
 
     let native_options = eframe::NativeOptions {
-        fullsize_content:false,
+        fullsize_content: false,
         always_on_top: false,
         maximized: false,
         decorated: true,

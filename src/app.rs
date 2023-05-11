@@ -32,6 +32,7 @@ impl TypeFastApp {
 
 impl eframe::App for TypeFastApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        ctx.request_repaint();
         egui::CentralPanel::default().show(ctx, |ui| {
             egui::ScrollArea::vertical()
                 .id_source("all")
