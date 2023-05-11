@@ -40,11 +40,13 @@ impl eframe::App for TypeFastApp {
 
                     //space only on web
                     #[cfg(target_arch = "wasm32")]
+                    //space on the top
                     ui.add_space(200.0);
 
                     ui.horizontal_wrapped(|ui| {
                         #[cfg(target_arch = "wasm32")]
-                        ui.add_space(700.0);
+                        //space on the left
+                        ui.add_space(500.0);
 
                         ui.group(|ui| {
                             ui.vertical(|ui| {
