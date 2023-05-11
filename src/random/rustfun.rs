@@ -1,5 +1,4 @@
 use rand::{seq::IteratorRandom, thread_rng};
-use serde::__private::de::IdentifierDeserializer;
 
 //He (subject) obtained (verb) his degree (object
 
@@ -8,7 +7,7 @@ pub fn random_function(max: u32) -> String {
     let new_max = if max > 20 { max / 2 } else { max };
 
     for _i in 0..new_max {
-        new_string.push_str(&random_sentence());
+        new_string.push_str(&random_rust_fun());
     }
 
     new_string.trim().into()
@@ -30,7 +29,7 @@ fn random_verb() -> Option<String> {
     sample.map(|s| s.to_owned().to_owned())
 }
 
-fn random_object() -> Option<String> {
+fn random_params() -> Option<String> {
     let mut rng = thread_rng();
     let subs = [
         "people",
@@ -147,42 +146,31 @@ fn random_object() -> Option<String> {
         "chemistry",
         "run",
         "shoot",
-        "They",
     ];
 
-    let mut countRng = thread_rng();
-    let sample = subs.iter().choose(&mut rng);
+    let mut count_rng = thread_rng();
+    let count: i32 = (1..5).choose(&mut count_rng).unwrap_or(1);
 
-   let column = ":";
-    let types = "String";
-    let comma = ",";
+    let mut result = String::new();
+    for now in 0..=count {
+        let sample = subs.iter().choose(&mut rng);
 
-    let values = sample.map(|s| s.to_owned().to_owned() + column + " " + types);
+        let column = ":";
+        let types = "String";
+        let comma = if now == count { "" } else { ", " };
 
- 
-
-
-    
-
-    
+        let param = sample.map(|s| s.to_owned().to_owned() + column + " " + types + comma);
+        result.push_str(&param.unwrap_or("".into()))
+    }
+    Some("(".to_string() + &result + ")")
 }
 
 pub fn random_rust_fun() -> String {
     let public = random_pub().unwrap_or("".into());
     let fun = "fn";
     let identifier = random_verb().unwrap_or("".into());
-    let braces = random_object().unwrap_or("".into());
-    let arrow = random_object().unwrap_or("".into());
-    let return_type = random_object().unwrap_or("".into());
-    public + " " + &fun + " " + &identifier  + &braces + " " + &arrow + " " + &return_type + "{"
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    pub fn random_sub_should_return_a_string() {
-        assert!(random_sub().is_some(), "should be some")
-    }
+    let params = random_params().unwrap_or("".into());
+    let arrow = "->";
+    let return_type = "String";
+    public + " " + fun + " " + &identifier + &params + " " + arrow + " " + return_type + " " + "{"
 }

@@ -36,10 +36,10 @@ impl TypeState {
             self.state = State::Reset
         }
 
-        let challenge_text = RichText::new(self.challenge.to_string()).size(45.0);
+        let challenge_text = RichText::new(self.challenge.to_string()).size(30.0);
         ui.horizontal_wrapped(|ui| ui.heading(challenge_text));
 
-        let input_text = RichText::new(self.input.to_string()).size(45.0);
+        let input_text = RichText::new(self.input.to_string()).size(30.0);
         ui.horizontal_wrapped(|ui| ui.heading(input_text));
 
         ui.add_space(100.0);

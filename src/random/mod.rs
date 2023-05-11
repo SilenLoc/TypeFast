@@ -1,9 +1,10 @@
 use self::{
-    letters::random_letters_inner, sentences::random_english_sentences, symbols::random_symbols,
-    words::random_english_words,
+    letters::random_letters_inner, rustfun::random_function, sentences::random_english_sentences,
+    symbols::random_symbols, words::random_english_words,
 };
 
 mod letters;
+mod rustfun;
 mod sentences;
 mod symbols;
 mod words;
@@ -18,7 +19,7 @@ pub struct Algorithm {
     pub random_function: &'static dyn Fn(u32) -> String,
 }
 
-pub const ALGS: [Algorithm; 4] = [
+pub const ALGS: [Algorithm; 5] = [
     Algorithm {
         id: "letters",
         version: "0.2",
@@ -50,6 +51,14 @@ pub const ALGS: [Algorithm; 4] = [
         lang: "well not really human",
         out_size: &2,
         random_function: &random_symbols,
+    },
+    Algorithm {
+        id: "rust_fun",
+        version: "0.1",
+        description: "a rust function signutare",
+        lang: "rust",
+        out_size: &10,
+        random_function: &random_function,
     },
 ];
 

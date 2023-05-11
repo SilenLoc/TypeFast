@@ -158,7 +158,7 @@ impl TFSetting {
     pub fn change_level(&mut self, new_level: Algorithm) {
         if !self.level.id.eq(new_level.id) {
             self.level_changed = true;
-            self.size = 2;
+            self.size = 1;
             self.level = new_level
         }
     }
@@ -200,13 +200,13 @@ mod tests {
 
         let alg1 = create_alg_1();
         settings.change_level(alg1);
-        assert_eq!(settings.size, 2);
+        assert_eq!(settings.size, 1);
 
         settings.size = 400;
 
         let alg2 = create_alg_2();
         settings.change_level(alg2);
-        assert_eq!(settings.size, 2);
+        assert_eq!(settings.size, 1);
     }
 
     #[test]
