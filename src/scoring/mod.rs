@@ -9,14 +9,19 @@ use egui::plot::{Line, PlotPoints};
 #[derive(serde::Deserialize, serde::Serialize, Default)]
 pub struct Score {
     score: u128,
-    score_per_duration: ScorePerDuration,
+    score_per_duration: WordsPerDuration,
     score_plot_state: Vec<[f64; 2]>,
 }
 
 impl Score {
     pub fn render_scoring(&mut self, ui: &mut Ui) {
         ui.collapsing("Statistics", |ui| {
-            ui.heading(format!("Score {}", self.score));
+            ui.heading(format!("words {}", self.score));
+            if ui.button("reset").clicked() {
+                self.score = 0;
+                self.score_plot_state.clear();
+                self.score_per_duration = Default::default()
+            };
             ui.vertical(|ui| {
                 let score_points: PlotPoints = PlotPoints::from(self.score_plot_state.clone());
 
@@ -32,10 +37,7 @@ impl Score {
                     "elapsed seconds {}",
                     self.score_per_duration.elapsed.as_secs_f64()
                 ));
-                ui.label(format!(
-                    "average score per second {}",
-                    self.score_per_duration.avg
-                ));
+                ui.label(format!("average wpm {}", self.score_per_duration.avg));
             });
         });
     }
@@ -44,12 +46,13 @@ impl Score {
         self.score_per_duration.ready()
     }
 
-    pub fn set(&mut self) {
-        self.score_per_duration.set(self.score);
+    pub fn set(&mut self, settings: &TFSetting) {
+        self.score_per_duration
+            .set((settings.current_challenge_len.div(6)) as u128);
     }
 
     pub fn won(&mut self, settings: &TFSetting) {
-        self.score += (settings.level.out_size * settings.size) as u128;
+        self.score += (settings.current_challenge_len.div(6)) as u128;
 
         self.score_plot_state.push([
             self.score_plot_state.len() as f64,
@@ -59,7 +62,7 @@ impl Score {
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]
-pub struct ScorePerDuration {
+pub struct WordsPerDuration {
     elapsed: Duration,
     #[serde(skip)]
     start: Time,
@@ -68,7 +71,7 @@ pub struct ScorePerDuration {
     avg: f64,
 }
 
-impl Default for ScorePerDuration {
+impl Default for WordsPerDuration {
     fn default() -> Self {
         Self {
             elapsed: Duration::from_millis(0),
@@ -80,15 +83,15 @@ impl Default for ScorePerDuration {
     }
 }
 
-impl ScorePerDuration {
+impl WordsPerDuration {
     pub fn ready(&mut self) {
         self.start = Time::now();
     }
 
-    pub fn set(&mut self, score: u128) {
+    pub fn set(&mut self, words: u128) {
         self.elapsed = self.start.0.elapsed();
 
-        self.state = (score as f64).div(self.elapsed.as_secs_f64());
+        self.state = (words as f64).div(self.elapsed.as_secs_f64()) * 60.0;
 
         self.history.push(self.state);
         self.avg = average(&self.history);

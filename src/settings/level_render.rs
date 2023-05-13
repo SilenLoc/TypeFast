@@ -52,14 +52,6 @@ pub fn render(level: &Algorithm, ui: &mut Ui) {
                         ui.label(level.lang);
                     });
                 });
-                body.row(30.0, |mut row| {
-                    row.col(|ui| {
-                        ui.label("score multiplier");
-                    });
-                    row.col(|ui| {
-                        ui.label(level.out_size.to_string());
-                    });
-                });
             });
     });
 }

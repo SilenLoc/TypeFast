@@ -22,6 +22,7 @@ pub struct TFSetting {
     pub level: Algorithm,
     pub size: u32,
     level_changed: bool,
+    pub current_challenge_len: u32,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Clone, Copy)]
@@ -56,6 +57,7 @@ impl Default for TFSetting {
             level_changed: false,
             last_theme: TFTheme::Default,
             theme: TFTheme::Macchiato,
+            current_challenge_len: 0,
         }
     }
 }
@@ -128,7 +130,6 @@ impl TFSetting {
                     version: "0",
                     description: "this algorithm does not exist",
                     lang: "mhh",
-                    out_size: &0,
                     random_function: &none,
                 },
             };
@@ -175,7 +176,6 @@ mod tests {
             version: "",
             description: "",
             lang: "",
-            out_size: &3,
             random_function: &none,
         }
     }
@@ -186,7 +186,6 @@ mod tests {
             version: "",
             description: "",
             lang: "",
-            out_size: &3,
             random_function: &none,
         }
     }
