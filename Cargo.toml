@@ -20,6 +20,7 @@ random_word = "0.3.0"
 catppuccin-egui = "2.0"
 egui_extras ="0.21"
 egui-notify = "0.6.0"
+egui_dock = "0.5"
 log = "0.4.17"
 getrandom = { version = "0.2", features = ["js"] }
 web-time = "0.2.0"
