@@ -6,23 +6,22 @@ use crate::{scoring::Score, settings::TFSetting};
 #[serde(default)]
 pub struct TypeState {
     input: String,
-    challenge: String,
     #[serde(skip)]
     state: State,
 }
-#[derive(serde::Deserialize, serde::Serialize, Debug)]
-enum State {
-    Started,
-    Typing,
-    Won,
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+pub enum State {
+    Started(String),
+    Typing(String),
+    Won(String),
     Reset,
     Initial,
-    None,
+    None(String),
 }
 
 impl Default for State {
     fn default() -> Self {
-        Self::None
+        Self::Initial
     }
 }
 
@@ -32,11 +31,64 @@ pub trait Challenge {
 
 impl TypeState {
     pub fn render(&mut self, ui: &mut Ui, score: &mut Score, settings: &mut TFSetting) {
+        settings.discover_state(&mut self.state);
+        score.discover_state(&mut self.state);
+
         if settings.level_changed() {
             self.state = State::Reset
         }
 
-        let challenge_text = RichText::new(self.challenge.to_string()).size(30.0);
+        match self.state.clone() {
+            State::Started(chal) => {
+                self.inner_render(ui, chal);
+            }
+            State::Typing(chal) => {
+                self.inner_render(ui, chal);
+            }
+            State::Won(chal) => {
+                self.inner_render(ui, chal);
+            }
+            State::Reset => self.inner_render(ui, "".to_owned()),
+            State::Initial => self.inner_render(ui, "".to_owned()),
+            State::None(chal) => {
+                self.inner_render(ui, chal);
+            }
+        }
+
+        match self.state.clone() {
+            State::Started(chal) => {
+                score.started_to_type();
+                self.state = State::Typing(chal)
+            }
+            State::Typing(chal) => {
+                //win condition
+                if self.input.eq(&chal) && !self.input.is_empty() {
+                    self.state = State::Won(chal);
+                }
+            }
+            State::Won(chal) => {
+                settings.current_challenge_len = chal.len() as u32;
+                self.state = State::Reset;
+                score.won(settings);
+                score.set(settings);
+            }
+            State::Reset => {
+                self.state = State::None(settings.provide_next_string().to_challenge());
+                self.input.clear();
+            }
+            State::Initial => {
+                self.state = State::None(settings.provide_next_string().to_challenge());
+            }
+            State::None(chal) => {
+                if !self.input.is_empty() {
+                    self.state = State::Started(chal)
+                }
+            }
+        }
+    }
+
+    fn inner_render(&mut self, ui: &mut Ui, chal: String) {
+        let challenge_text = RichText::new(chal).size(30.0);
         ui.horizontal_wrapped(|ui| ui.heading(challenge_text));
 
         let input_text = RichText::new(self.input.to_string()).size(30.0);
@@ -51,38 +103,9 @@ impl TypeState {
                 self.state = State::Reset
             }
         });
-
-        match self.state {
-            State::Started => {
-                score.started_to_type();
-                self.state = State::Typing
-            }
-            State::Typing => {
-                //win condition
-                if self.input.eq(&self.challenge) && !self.input.is_empty() {
-                    self.state = State::Won;
-                }
-            }
-            State::Won => {
-                settings.current_challenge_len = self.challenge.len() as u32;
-                self.state = State::Reset;
-                score.won(settings);
-                score.set(settings);
-            }
-            State::Reset => {
-                self.challenge = settings.provide_next_string().to_challenge();
-                self.input.clear();
-                self.state = State::None
-            }
-            State::Initial => {
-                self.challenge = settings.provide_next_string().to_challenge();
-                self.state = State::None
-            }
-            State::None => {
-                if !self.input.is_empty() {
-                    self.state = State::Started
-                }
-            }
-        }
     }
+}
+
+pub trait Module {
+    fn discover_state(&mut self, type_state: &mut State);
 }

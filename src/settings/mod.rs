@@ -9,6 +9,7 @@ mod level_render;
 use crate::{
     app::Services,
     random::{none, Algorithm, ALGS},
+    typewriter::{self, Module},
 };
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -23,6 +24,10 @@ pub struct TFSetting {
     pub size: u32,
     level_changed: bool,
     pub current_challenge_len: u32,
+}
+
+impl Module for TFSetting {
+    fn discover_state(&mut self, _type_state: &mut typewriter::State) {}
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Clone, Copy)]

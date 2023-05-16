@@ -3,7 +3,7 @@ use std::ops::Div;
 use egui::{plot::Plot, Ui};
 use web_time::{Duration, Instant};
 
-use crate::settings::TFSetting;
+use crate::{settings::TFSetting, typewriter::Module};
 use egui::plot::{Line, PlotPoints};
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
@@ -11,6 +11,9 @@ pub struct Score {
     score: u128,
     score_per_duration: WordsPerDuration,
     score_plot_state: Vec<[f64; 2]>,
+}
+impl Module for Score {
+    fn discover_state(&mut self, _type_state: &mut crate::typewriter::State) {}
 }
 
 impl Score {
