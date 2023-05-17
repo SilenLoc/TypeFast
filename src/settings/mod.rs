@@ -4,7 +4,6 @@ use egui::Ui;
 use log::info;
 
 mod command_helper_render;
-mod level_render;
 
 use crate::{
     app::Services,
@@ -71,7 +70,6 @@ impl TFSetting {
     pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             self.render_settings(services, ui);
-            level_render::render(&self.level, ui);
         });
     }
 
@@ -83,14 +81,10 @@ impl TFSetting {
 
     fn render_settings(&mut self, services: &mut Services, ui: &mut Ui) {
         self.process_command(services);
-
-        ui.collapsing("Settings", |ui| {
+        ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
+            command_helper_render::render(self, ui);
             ui.add_space(10.0);
-            ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
-                command_helper_render::render(self, ui);
-                ui.add_space(10.0);
-                self.render_theme_choose(ui);
-            });
+            self.render_theme_choose(ui);
         });
     }
 

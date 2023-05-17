@@ -2,6 +2,7 @@ use egui_dock::{NodeIndex, Tree};
 
 use super::Module;
 use super::Services;
+use crate::current;
 use crate::{scoring::Score, settings::TFSetting, typewriter::TypeState};
 
 pub struct Tabs {
@@ -23,6 +24,7 @@ impl Tabs {
             vec![
                 Module::Settings("Settings".into()),
                 Module::Score("Score".into()),
+                Module::Current("Current".into()),
             ],
         );
 
@@ -44,12 +46,14 @@ impl egui_dock::TabViewer for TabView {
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
         self.settings.set_new_theme(ui.ctx());
+        self.services.notifier.show(ui.ctx());
         match tab {
             Module::Typing(_) => self
                 .type_state
                 .render(ui, &mut self.score, &mut self.settings),
             Module::Settings(_) => self.settings.render(&mut self.services, ui),
             Module::Score(_) => self.score.render_scoring(ui),
+            Module::Current(_) => current::render(&self.settings.level, ui),
         }
     }
 
@@ -58,6 +62,7 @@ impl egui_dock::TabViewer for TabView {
             Module::Typing(title) => title,
             Module::Settings(title) => title,
             Module::Score(title) => title,
+            Module::Current(title) => title,
         };
         egui::WidgetText::RichText(title.into())
     }

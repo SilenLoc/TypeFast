@@ -25,6 +25,7 @@ pub enum Module {
     Typing(String),
     Settings(String),
     Score(String),
+    Current(String),
 }
 
 impl TypeFastApp {
@@ -96,6 +97,17 @@ fn render_top(ui: &mut egui::Ui, app: &mut TypeFastApp) {
             app.tabs
                 .tree
                 .push_to_first_leaf(Module::Score("Score".into()))
+        }
+        if ui.button("Current").clicked()
+            && app
+                .tabs
+                .tree
+                .find_tab(&Module::Current("Current".into()))
+                .is_none()
+        {
+            app.tabs
+                .tree
+                .push_to_first_leaf(Module::Current("Current".into()))
         }
     });
 }

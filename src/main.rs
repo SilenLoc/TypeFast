@@ -4,6 +4,7 @@
 use crate::app::TypeFastApp;
 
 mod app;
+mod current;
 mod random;
 mod scoring;
 mod settings;
