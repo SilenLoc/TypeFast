@@ -12,6 +12,8 @@ pub struct TypeFastApp {
     #[serde(skip)]
     tabs: Tabs,
     tab_view: TabView,
+    #[serde(skip)]
+    addable_modules: Vec<Module>,
 }
 
 #[derive(Default)]
@@ -34,17 +36,37 @@ impl eframe::App for TypeFastApp {
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                if ui.button("Typing").clicked() {
+                if ui.button("Typing").clicked()
+                    && self
+                        .tabs
+                        .tree
+                        .find_tab(&Module::Typing("Typing".into()))
+                        .is_none()
+                {
                     self.tabs
                         .tree
                         .push_to_first_leaf(Module::Typing("Typing".into()))
                 }
-                if ui.button("Settings").clicked() {
+
+                if ui.button("Settings").clicked()
+                    && self
+                        .tabs
+                        .tree
+                        .find_tab(&Module::Settings("Settings".into()))
+                        .is_none()
+                {
                     self.tabs
                         .tree
                         .push_to_first_leaf(Module::Settings("Settings".into()))
                 }
-                if ui.button("Score").clicked() {
+
+                if ui.button("Score").clicked()
+                    && self
+                        .tabs
+                        .tree
+                        .find_tab(&Module::Score("Score".into()))
+                        .is_none()
+                {
                     self.tabs
                         .tree
                         .push_to_first_leaf(Module::Score("Score".into()))
@@ -83,9 +105,9 @@ impl Default for Tabs {
 impl Tabs {
     pub fn new() -> Self {
         let mut tree = Tree::new(vec![Module::Typing("Typing".to_string())]);
-        tree.split_left(
+        tree.split_below(
             NodeIndex::root(),
-            0.20,
+            0.70,
             vec![
                 Module::Settings("Settings".into()),
                 Module::Score("Score".into()),
@@ -102,6 +124,7 @@ fn render_ui(ui: &mut egui::Ui, app: &mut TypeFastApp) {
         .show_inside(ui, &mut app.tab_view);
 }
 
+#[derive(PartialEq)]
 enum Module {
     Typing(String),
     Settings(String),
