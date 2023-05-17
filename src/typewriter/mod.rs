@@ -109,3 +109,9 @@ impl TypeState {
 pub trait Module {
     fn discover_state(&mut self, type_state: &mut State);
 }
+
+impl Challenge for str {
+    fn to_challenge(&self) -> String {
+        self.to_string()
+    }
+}
