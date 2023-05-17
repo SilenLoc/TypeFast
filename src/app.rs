@@ -146,14 +146,10 @@ impl egui_dock::TabViewer for TabView {
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
         self.settings.set_new_theme(ui.ctx());
         match tab {
-            
             Module::Typing(_) => self
                 .type_state
                 .render(ui, &mut self.score, &mut self.settings),
-            Module::Settings(_) => {
-                
-                self.settings.render(&mut self.services, ui)
-            }
+            Module::Settings(_) => self.settings.render(&mut self.services, ui),
             Module::Score(_) => self.score.render_scoring(ui),
         }
     }
