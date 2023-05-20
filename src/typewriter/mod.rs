@@ -31,9 +31,6 @@ pub trait Challenge {
 
 impl TypeState {
     pub fn render(&mut self, ui: &mut Ui, score: &mut Score, settings: &mut TFSetting) {
-        settings.discover_state(&mut self.state);
-        score.discover_state(&mut self.state);
-
         if settings.level_changed() {
             self.state = State::Reset
         }
@@ -104,10 +101,6 @@ impl TypeState {
             }
         });
     }
-}
-
-pub trait Module {
-    fn discover_state(&mut self, type_state: &mut State);
 }
 
 impl Challenge for str {

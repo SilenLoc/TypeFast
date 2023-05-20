@@ -1,15 +1,13 @@
-use std::time::Duration;
-
-use egui::Ui;
-use log::info;
-
 mod command_helper_render;
+mod command_processer;
+mod theme_chooser;
 
 use crate::{
     app::Services,
-    random::{none, Algorithm, ALGS},
-    typewriter::{self, Module},
+    random::{Algorithm, ALGS},
 };
+
+use self::{command_processer::process_command, theme_chooser::render_theme_choose};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -17,16 +15,12 @@ pub struct TFSetting {
     pub command: String,
     last_command: String,
     last_theme: TFTheme,
-    theme: TFTheme,
+    pub theme: TFTheme,
     #[serde(skip)]
     pub level: Algorithm,
     pub size: u32,
     level_changed: bool,
     pub current_challenge_len: u32,
-}
-
-impl Module for TFSetting {
-    fn discover_state(&mut self, _type_state: &mut typewriter::State) {}
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Clone, Copy)]
@@ -69,7 +63,12 @@ impl Default for TFSetting {
 impl TFSetting {
     pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
-            self.render_settings(services, ui);
+            process_command(self, services);
+            ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
+                command_helper_render::render(self, ui);
+                ui.add_space(10.0);
+                render_theme_choose(self, ui);
+            });
         });
     }
 
@@ -77,28 +76,6 @@ impl TFSetting {
         let old = self.level_changed;
         self.level_changed = false;
         old
-    }
-
-    fn render_settings(&mut self, services: &mut Services, ui: &mut Ui) {
-        self.process_command(services);
-        ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
-            command_helper_render::render(self, ui);
-            ui.add_space(10.0);
-            self.render_theme_choose(ui);
-        });
-    }
-
-    fn render_theme_choose(&mut self, ui: &mut Ui) {
-        egui::ComboBox::from_label("Theme")
-            .selected_text(format!("{:?}", self.theme))
-            .show_ui(ui, |ui| {
-                ui.style_mut().wrap = Some(false);
-                ui.set_min_width(60.0);
-                ui.selectable_value(&mut self.theme, TFTheme::Macchiato, "Macchiato");
-                ui.selectable_value(&mut self.theme, TFTheme::Frappe, "Frappe");
-                ui.selectable_value(&mut self.theme, TFTheme::Latte, "Latte");
-                ui.selectable_value(&mut self.theme, TFTheme::Mocha, "Mocha");
-            });
     }
 
     pub fn set_new_theme(&mut self, ctx: &egui::Context) {
@@ -110,42 +87,6 @@ impl TFSetting {
 
     pub fn notify_help(&mut self, text: &str) {
         self.command = "help".to_string() + " " + text + ";";
-    }
-
-    fn process_command(&mut self, services: &mut Services) {
-        let command = self.command.clone();
-
-        if self.command.contains(';') {
-            self.last_command = command.clone();
-            self.command.clear();
-        }
-
-        if command.contains("level") {
-            let new_level = match ALGS.into_iter().find(|alg| command.contains(alg.id)) {
-                Some(alg) => alg,
-                None => Algorithm {
-                    id: "None",
-                    version: "0",
-                    description: "this algorithm does not exist",
-                    lang: "mhh",
-                    random_function: &none,
-                },
-            };
-            self.change_level(new_level)
-        }
-
-        if command.contains("help") {
-            info!("{}", command);
-            let info = command
-                .strip_prefix("help")
-                .and_then(|x| x.strip_suffix(';'))
-                .unwrap_or("");
-            services
-                .notifier
-                .info(info)
-                .set_closable(true)
-                .set_duration(Some(Duration::from_secs_f32(30.0)));
-        }
     }
 
     #[allow(clippy::let_and_return)]
@@ -165,6 +106,8 @@ impl TFSetting {
 
 #[cfg(test)]
 mod tests {
+
+    use crate::random::none;
 
     use super::*;
 

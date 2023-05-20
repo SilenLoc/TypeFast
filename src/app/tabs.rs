@@ -1,7 +1,9 @@
+use egui_dock::Style;
 use egui_dock::{NodeIndex, Tree};
 
 use super::Module;
 use super::Services;
+use super::TypeFastApp;
 use crate::current;
 use crate::{scoring::Score, settings::TFSetting, typewriter::TypeState};
 
@@ -30,6 +32,12 @@ impl Tabs {
 
         Self { tree }
     }
+}
+
+pub fn render(ui: &mut egui::Ui, app: &mut TypeFastApp) {
+    egui_dock::DockArea::new(&mut app.tabs.tree)
+        .style(Style::from_egui(ui.style().as_ref()))
+        .show_inside(ui, &mut app.tab_view);
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]

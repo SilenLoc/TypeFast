@@ -1,8 +1,8 @@
-use egui_dock::Style;
 use egui_notify::Toasts;
 
 use self::tabs::{TabView, Tabs};
 
+mod tab_adder;
 mod tabs;
 
 #[derive(serde::Deserialize, serde::Serialize, Default)]
@@ -42,72 +42,15 @@ impl eframe::App for TypeFastApp {
         ctx.request_repaint();
 
         egui::TopBottomPanel::top("top").show(ctx, |ui| {
-            render_top(ui, self);
+            tab_adder::render(ui, self);
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            render_center(ui, self);
+            tabs::render(ui, self);
         });
     }
 
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
     }
-}
-
-fn render_center(ui: &mut egui::Ui, app: &mut TypeFastApp) {
-    egui_dock::DockArea::new(&mut app.tabs.tree)
-        .style(Style::from_egui(ui.style().as_ref()))
-        .show_inside(ui, &mut app.tab_view);
-}
-
-fn render_top(ui: &mut egui::Ui, app: &mut TypeFastApp) {
-    ui.horizontal(|ui| {
-        if ui.button("Typing").clicked()
-            && app
-                .tabs
-                .tree
-                .find_tab(&Module::Typing("Typing".into()))
-                .is_none()
-        {
-            app.tabs
-                .tree
-                .push_to_first_leaf(Module::Typing("Typing".into()))
-        }
-
-        if ui.button("Settings").clicked()
-            && app
-                .tabs
-                .tree
-                .find_tab(&Module::Settings("Settings".into()))
-                .is_none()
-        {
-            app.tabs
-                .tree
-                .push_to_first_leaf(Module::Settings("Settings".into()))
-        }
-
-        if ui.button("Score").clicked()
-            && app
-                .tabs
-                .tree
-                .find_tab(&Module::Score("Score".into()))
-                .is_none()
-        {
-            app.tabs
-                .tree
-                .push_to_first_leaf(Module::Score("Score".into()))
-        }
-        if ui.button("Current").clicked()
-            && app
-                .tabs
-                .tree
-                .find_tab(&Module::Current("Current".into()))
-                .is_none()
-        {
-            app.tabs
-                .tree
-                .push_to_first_leaf(Module::Current("Current".into()))
-        }
-    });
 }
