@@ -17,7 +17,7 @@ tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
 random_word = "0.3.0"
-catppuccin-egui = "2.0"
+catppuccin-egui = "3.0"
 egui_extras ="0.21"
 egui-notify = "0.6.0"
 egui_dock = "0.5"
