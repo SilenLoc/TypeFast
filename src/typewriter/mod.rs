@@ -66,8 +66,8 @@ impl TypeState {
             State::Won(chal) => {
                 settings.current_challenge_len = chal.len() as u32;
                 self.state = State::Reset;
-                score.won(settings);
-                score.set(settings);
+                score.won();
+                score.set(settings.current_challenge_len);
             }
             State::Reset => {
                 self.state = State::None(settings.provide_next_string().to_challenge());

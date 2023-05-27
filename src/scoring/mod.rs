@@ -1,63 +1,45 @@
-use std::ops::Div;
-
-use egui::{plot::Plot, Ui};
-
-use crate::settings::TFSetting;
-use egui::plot::{Line, PlotPoints};
+use egui::Ui;
 
 use self::wpm::WordsPerDuration;
 
 mod wpm;
 
-#[derive(serde::Deserialize, serde::Serialize, Default)]
+#[derive(serde::Deserialize, serde::Serialize)]
 pub struct Score {
-    score: u128,
-    score_per_duration: WordsPerDuration,
-    score_plot_state: Vec<[f64; 2]>,
+    words_per_minute: WordsPerDuration,
+    char_per_minute: WordsPerDuration,
+}
+
+impl Default for Score {
+    fn default() -> Self {
+        Self {
+            words_per_minute: WordsPerDuration::new(5),
+            char_per_minute: WordsPerDuration::new(1),
+        }
+    }
 }
 
 impl Score {
     pub fn render(&mut self, ui: &mut Ui) {
-        ui.heading(format!("words {}", self.score));
-        if ui.button("reset").clicked() {
-            self.score = 0;
-            self.score_plot_state.clear();
-            self.score_per_duration = Default::default()
-        };
-        ui.vertical(|ui| {
-            let score_points: PlotPoints = PlotPoints::from(self.score_plot_state.clone());
-
-            let line = Line::new(score_points);
-            Plot::new("my_plot")
-                .auto_bounds_x()
-                .auto_bounds_y()
-                .width(400.0)
-                .height(100.0)
-                .show(ui, |plot_ui| plot_ui.line(line));
-
-            ui.label(format!(
-                "elapsed seconds {}",
-                self.score_per_duration.elapsed.as_secs_f64()
-            ));
-            ui.label(format!("average wpm {}", self.score_per_duration.avg));
+        ui.horizontal_wrapped(|ui| {
+            self.words_per_minute.render(ui, "word");
+            ui.separator();
+            self.char_per_minute.render(ui, "char");
         });
     }
 
     pub fn started_to_type(&mut self) {
-        self.score_per_duration.ready()
+        self.words_per_minute.ready();
+        self.char_per_minute.ready()
     }
 
-    pub fn set(&mut self, settings: &TFSetting) {
-        self.score_per_duration
-            .set((settings.current_challenge_len.div(6)) as u128);
+    pub fn set(&mut self, len: u32) {
+        self.words_per_minute.set(len);
+        self.char_per_minute.set(len);
     }
 
-    pub fn won(&mut self, settings: &TFSetting) {
-        self.score += (settings.current_challenge_len.div(6)) as u128;
-
-        self.score_plot_state.push([
-            self.score_plot_state.len() as f64,
-            self.score_per_duration.avg,
-        ]);
+    pub fn won(&mut self) {
+        self.words_per_minute.won();
+        self.char_per_minute.won();
     }
 }

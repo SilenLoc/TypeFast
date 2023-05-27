@@ -29,7 +29,6 @@ fn main() {
     });
 }
 
-
 #[cfg(target_os = "linux")]
 fn main() -> eframe::Result<()> {
     tracing_subscriber::fmt::init();
@@ -69,7 +68,6 @@ fn main() -> eframe::Result<()> {
     )
 }
 
-
 #[cfg(target_os = "windows")]
 fn main() -> eframe::Result<()> {
     tracing_subscriber::fmt::init();
@@ -106,7 +104,6 @@ fn main() -> eframe::Result<()> {
         Box::new(|cc| Box::new(TypeFastApp::new(cc))),
     )
 }
-
 
 #[cfg(target_os = "macos")]
 fn main() -> eframe::Result<()> {
