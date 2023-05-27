@@ -60,7 +60,7 @@ impl egui_dock::TabViewer for TabView {
                 .type_state
                 .render(ui, &mut self.score, &mut self.settings),
             Module::Settings(_) => self.settings.render(&mut self.services, ui),
-            Module::Score(_) => self.score.render_scoring(ui),
+            Module::Score(_) => self.score.render(ui),
             Module::Current(_) => current::render(&self.settings.level, ui),
         }
     }

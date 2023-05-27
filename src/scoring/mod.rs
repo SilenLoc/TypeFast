@@ -17,7 +17,7 @@ pub struct Score {
 }
 
 impl Score {
-    pub fn render_scoring(&mut self, ui: &mut Ui) {
+    pub fn render(&mut self, ui: &mut Ui) {
         ui.heading(format!("words {}", self.score));
         if ui.button("reset").clicked() {
             self.score = 0;

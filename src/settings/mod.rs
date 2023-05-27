@@ -7,7 +7,7 @@ use crate::{
     random::{Algorithm, ALGS},
 };
 
-use self::{command_processer::process_command, theme_chooser::render_theme_choose};
+use self::command_processer::process_command;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -67,7 +67,7 @@ impl TFSetting {
             ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
                 command_helper_render::render(self, ui);
                 ui.add_space(10.0);
-                render_theme_choose(self, ui);
+                theme_chooser::render(self, ui);
             });
         });
     }

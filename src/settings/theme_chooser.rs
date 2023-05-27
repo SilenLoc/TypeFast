@@ -2,7 +2,7 @@ use egui::Ui;
 
 use super::{TFSetting, TFTheme};
 
-pub fn render_theme_choose(settings: &mut TFSetting, ui: &mut Ui) {
+pub fn render(settings: &mut TFSetting, ui: &mut Ui) {
     egui::ComboBox::from_label("Theme")
         .selected_text(format!("{:?}", settings.theme))
         .show_ui(ui, |ui| {
