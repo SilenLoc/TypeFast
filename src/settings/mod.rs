@@ -52,7 +52,7 @@ impl Default for TFSetting {
         Self {
             command: Default::default(),
             last_command: Default::default(),
-            level: ALGS[0],
+            level: ALGS[1],
             size: 2,
             level_changed: false,
             last_theme: TFTheme::Default,
