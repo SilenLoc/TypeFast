@@ -26,10 +26,7 @@ Some ideas:
 
 Roadmap:
 
-- Minimalistic UI
 - Your own Themes
 - 20 different Challenges
-- Scoring system
-- Challenge Statistics
 
 [1]: https://github.com/SilenLoc/TypeFast/blob/main/src/random/mod.rs
