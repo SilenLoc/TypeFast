@@ -7,8 +7,7 @@ edition = "2021"
 
 [dependencies]
 egui = "0.22"
-eframe = { version = "0.22.0", default-features = false, features = [
-  "accesskit",     # Make egui comptaible with screen readers. NOTE: adds a lot of dependencies.
+eframe = { version = "0.22.0", default-features = true, features = [
   "default_fonts", # Embed the default egui fonts.
   "glow",          # Use the glow rendering backend. Alternative: "wgpu".
   "persistence",   # Enable restoring app state when restarting the app.
@@ -26,6 +25,8 @@ getrandom = { version = "0.2", features = ["js"] }
 web-time = "0.2.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2.86"
 console_error_panic_hook = "0.1.7"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
+wgpu = { version = "0.16.0", features = ["webgl"] }
