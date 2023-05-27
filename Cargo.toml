@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-egui = "0.21.0"
-eframe = { version = "0.21.3", default-features = false, features = [
+egui = "0.22"
+eframe = { version = "0.22.0", default-features = false, features = [
   "accesskit",     # Make egui comptaible with screen readers. NOTE: adds a lot of dependencies.
   "default_fonts", # Embed the default egui fonts.
   "glow",          # Use the glow rendering backend. Alternative: "wgpu".
@@ -17,10 +17,10 @@ tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
 random_word = "0.3.0"
-catppuccin-egui = "2.0"
-egui_extras ="0.21"
-egui-notify = "0.6.0"
-egui_dock = "0.5"
+catppuccin-egui = "3.0.0"
+egui_extras ="0.22.0"
+egui-notify = { git = "https://github.com/ItsEthra/egui-notify.git" }
+egui_dock = "0.6.0"
 log = "0.4.17"
 getrandom = { version = "0.2", features = ["js"] }
 web-time = "0.2.0"

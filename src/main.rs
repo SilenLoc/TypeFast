@@ -33,6 +33,8 @@ fn main() {
 fn main() -> eframe::Result<()> {
     tracing_subscriber::fmt::init();
     let native_options = eframe::NativeOptions {
+        active: true,
+        app_id: Some("type".to_owned()),
         always_on_top: false,
         maximized: false,
         decorated: true,

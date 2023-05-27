@@ -2,6 +2,8 @@ mod command_helper_render;
 mod command_processer;
 mod theme_chooser;
 
+use egui::Context;
+
 use crate::{
     app::Services,
     random::{Algorithm, ALGS},
@@ -78,7 +80,7 @@ impl TFSetting {
         old
     }
 
-    pub fn set_new_theme(&mut self, ctx: &egui::Context) {
+    pub fn set_new_theme(&mut self, ctx: &Context) {
         if self.last_theme != self.theme {
             catppuccin_egui::set_theme(ctx, self.theme.to_cat_theme());
             self.last_theme = self.theme
