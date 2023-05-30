@@ -15,7 +15,7 @@ eframe = { version = "0.22.0", default-features = true, features = [
 tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
-random_word = "0.3.0"
+random_word = "0.3.1"
 catppuccin-egui = "3.0.0"
 egui_extras ="0.22.0"
 egui-notify = { git = "https://github.com/ItsEthra/egui-notify.git" }
@@ -29,4 +29,4 @@ wasm-bindgen = "0.2.86"
 console_error_panic_hook = "0.1.7"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
-wgpu = { version = "0.16.0", features = ["webgl"] }
+wgpu = { version = "0.16.1", features = ["webgl"] }
