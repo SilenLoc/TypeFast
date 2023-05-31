@@ -53,7 +53,7 @@ impl Default for TFSetting {
             command: Default::default(),
             last_command: Default::default(),
             level: ALGS[1],
-            size: 2,
+            size: 1,
             level_changed: false,
             last_theme: TFTheme::Default,
             theme: TFTheme::Macchiato,
