@@ -1,5 +1,5 @@
-use egui_dock::Style;
-use egui_dock::{NodeIndex, Tree};
+use egui_dock::NodeIndex;
+use egui_dock::{DockState, Style};
 
 use super::Module;
 use super::Services;
@@ -8,7 +8,7 @@ use crate::current;
 use crate::{scoring::Score, settings::TFSetting, typewriter::TypeState};
 
 pub struct Tabs {
-    pub tree: Tree<Module>,
+    pub tree: DockState<Module>,
 }
 
 impl Default for Tabs {
@@ -19,8 +19,8 @@ impl Default for Tabs {
 
 impl Tabs {
     pub fn new() -> Self {
-        let mut tree = Tree::new(vec![Module::Typing("Typing".to_string())]);
-        tree.split_below(
+        let mut tree = DockState::new(vec![Module::Typing("Typing".to_string())]);
+        tree.main_surface_mut().split_below(
             NodeIndex::root(),
             0.70,
             vec![
@@ -54,7 +54,6 @@ impl egui_dock::TabViewer for TabView {
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
         self.settings.set_new_theme(ui.ctx());
-        self.services.notifier.show(ui.ctx());
         match tab {
             Module::Typing(_) => self
                 .type_state

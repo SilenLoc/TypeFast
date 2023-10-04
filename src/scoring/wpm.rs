@@ -1,9 +1,7 @@
 use std::ops::Div;
 
-use egui::{
-    plot::{Line, Plot, PlotPoints},
-    Ui,
-};
+use egui::Ui;
+use egui_plot::{Line, PlotPoints};
 use web_time::{Duration, Instant};
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -55,7 +53,7 @@ impl WordsPerDuration {
 
             let line = Line::new(score_points);
             ui.group(|ui| {
-                let plot = Plot::new(title)
+                let plot = egui_plot::Plot::new(title)
                     .auto_bounds_x()
                     .auto_bounds_y()
                     .width(400.0)

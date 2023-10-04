@@ -37,8 +37,10 @@ fn main() -> eframe::Result<()> {
         default_theme: eframe::Theme::Dark,
         run_and_return: Default::default(),
         event_loop_builder: Default::default(),
+        window_builder: Default::default(),
         shader_version: Default::default(),
         centered: true,
+        persist_window: false,
     };
     eframe::run_native(
         "TypeFast",
