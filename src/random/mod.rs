@@ -2,7 +2,9 @@ use self::{
     letters::random_letters_inner, rustfun::random_function, sentences::random_english_sentences,
     symbols::random_symbols, words::random_english_words,
 };
+use crate::random::hard_words::random_hard_english_words;
 
+mod hard_words;
 mod letters;
 mod rustfun;
 mod sentences;
@@ -18,7 +20,7 @@ pub struct Algorithm {
     pub random_function: &'static dyn Fn(u32) -> String,
 }
 
-pub const ALGS: [Algorithm; 5] = [
+pub const ALGS: [Algorithm; 6] = [
     Algorithm {
         id: "letters",
         version: "0.2",
@@ -32,6 +34,13 @@ pub const ALGS: [Algorithm; 5] = [
         description: "some english words",
         lang: "eng",
         random_function: &random_english_words,
+    },
+    Algorithm {
+        id: "hard",
+        version: "0.1",
+        description: "hard english words to type",
+        lang: "english",
+        random_function: &random_hard_english_words,
     },
     Algorithm {
         id: "sentences",
