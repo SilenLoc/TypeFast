@@ -1,6 +1,6 @@
 use std::ops::Div;
 
-use egui::Ui;
+use egui::{Ui, Vec2b};
 use egui_plot::{Line, PlotPoints};
 use web_time::{Duration, Instant};
 
@@ -54,8 +54,7 @@ impl WordsPerDuration {
             let line = Line::new(score_points);
             ui.group(|ui| {
                 let plot = egui_plot::Plot::new(title)
-                    .auto_bounds_x()
-                    .auto_bounds_y()
+                    .auto_bounds(Vec2b::new(true, true))
                     .width(400.0)
                     .height(100.0)
                     .show_axes([self.show_axes; 2])
@@ -124,6 +123,6 @@ impl Time {
     }
 }
 
-fn average(history: &Vec<f64>) -> f64 {
+fn average(history: &[f64]) -> f64 {
     history.iter().sum::<f64>() / history.len() as f64
 }
