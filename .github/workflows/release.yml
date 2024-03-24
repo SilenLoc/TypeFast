@@ -12,11 +12,11 @@ jobs:
   build-github-pages:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3 # repo checkout
       - uses: taiki-e/install-action@v2
         with:
           tool: just@1  
       - run: just verify
-      - uses: actions/checkout@v2 # repo checkout
       - uses: actions-rs/toolchain@v1 # get rust toolchain for wasm
         with:
           profile: minimal
