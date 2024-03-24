@@ -6,9 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-egui = "0.23"
-egui_plot = "0.23.0"
-eframe = { version = "0.23.0", default-features = true, features = [
+egui = "0.26"
+egui_plot = "0.26"
+eframe = { version = "0.26", default-features = true, features = [
   "default_fonts", # Embed the default egui fonts.
   "glow",          # Use the glow rendering backend. Alternative: "wgpu".
   "persistence",   # Enable restoring app state when restarting the app.
@@ -18,9 +18,9 @@ serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
 random_word = { version = "0.4", features = ["en"] }
 catppuccin-egui = { git = "https://github.com/catppuccin/egui.git" }
-egui_extras ="0.23.0"
+egui_extras ="0.26.0"
 egui-notify = { git = "https://github.com/ItsEthra/egui-notify.git" }
-egui_dock = "0.8"
+egui_dock = "0.11.4"
 log = "0.4.20"
 getrandom = { version = "0.2", features = ["js"] }
 web-time = "0.2.0"
