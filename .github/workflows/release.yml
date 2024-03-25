@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3 # repo checkout
       - name: Rust Cache # cache the rust build artefacts
-        uses: Swatinem/rust-cache@v1
+        uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with:
           tool: just@1
