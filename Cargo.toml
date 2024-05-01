@@ -21,7 +21,7 @@ catppuccin-egui = { version = "5" }
 egui_extras ="0.26"
 egui-notify = { version = "0.13" }
 egui_dock = "0.11.4"
-log = "0.4"
+log = "0.4.21"
 getrandom = { version = "0.2", features = ["js"] }
 web-time = "1"
 
