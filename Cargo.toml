@@ -16,7 +16,7 @@ eframe = { version = "0.26", default-features = false, features = [
 tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
-random_word = { version = "0.4", features = ["en"] }
+random_word = { version = "0.4.3", features = ["en"] }
 catppuccin-egui = { version = "5" }
 egui_extras ="0.26"
 egui-notify = { version = "0.13" }
