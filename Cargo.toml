@@ -22,7 +22,7 @@ egui_extras ="0.26"
 egui-notify = { version = "0.13" }
 egui_dock = "0.11.4"
 log = "0.4"
-getrandom = { version = "0.2", features = ["js"] }
+getrandom = { version = "0.2.14", features = ["js"] }
 web-time = "1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
