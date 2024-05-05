@@ -19,7 +19,7 @@ rand = "0.8.5"
 random_word = { version = "0.4", features = ["en"] }
 catppuccin-egui = { version = "5" }
 egui_extras ="0.26"
-egui-notify = { version = "0.13" }
+egui-notify = { version = "0.14" }
 egui_dock = "0.11.4"
 log = "0.4"
 getrandom = { version = "0.2", features = ["js"] }
