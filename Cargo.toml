@@ -18,7 +18,7 @@ serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
 random_word = { version = "0.4", features = ["en"] }
 catppuccin-egui = { version = "5" }
-egui_extras ="0.26"
+egui_extras ="0.27"
 egui-notify = { version = "0.13" }
 egui_dock = "0.11.4"
 log = "0.4"
