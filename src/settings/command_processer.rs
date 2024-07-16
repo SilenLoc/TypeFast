@@ -12,7 +12,7 @@ pub fn process_command(settings: &mut TFSetting, services: &mut Services) {
     let command = settings.command.clone();
 
     if settings.command.contains(';') {
-        settings.last_command = command.clone();
+        settings.last_command.clone_from(&command);
         settings.command.clear();
     }
 
