@@ -14,7 +14,7 @@ eframe = { version = "0.27", default-features = false, features = [
     "persistence",   # Enable restoring app state when restarting the app.
 ] }
 egui_extras ="0.27"
-egui-notify = { version = "0.13" }
+egui-notify = { version = "0.18" }
 egui_dock = "0.12"
 catppuccin-egui = { version = "5.1", default-features = false, features = ["egui27"]  }
 
