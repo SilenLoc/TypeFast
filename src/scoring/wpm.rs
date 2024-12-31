@@ -33,7 +33,7 @@ impl WordsPerDuration {
 
                     ui.add(
                         egui::DragValue::new(&mut self.wpm_factor)
-                            .clamp_range(1..=10)
+                            .range(1..=10)
                             .suffix(format!(" chars per {}", title)),
                     );
 

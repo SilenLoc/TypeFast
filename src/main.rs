@@ -18,8 +18,6 @@ fn main() -> eframe::Result<()> {
         stencil_buffer: 0,
         hardware_acceleration: eframe::HardwareAcceleration::Preferred,
         renderer: eframe::Renderer::Glow,
-        follow_system_theme: Default::default(),
-        default_theme: eframe::Theme::Dark,
         run_and_return: Default::default(),
         event_loop_builder: Default::default(),
         window_builder: Default::default(),
@@ -27,11 +25,13 @@ fn main() -> eframe::Result<()> {
         centered: true,
         persist_window: false,
         viewport: Default::default(),
+        persistence_path: Default::default(),
+        dithering: Default::default(),
     };
     eframe::run_native(
         "TypeFast",
         native_options,
-        Box::new(|cc| Box::new(app::TypeFastApp::new(cc))),
+        Box::new(|cc| Ok(Box::new(app::TypeFastApp::new(cc)))),
     )
 }
 
@@ -116,54 +116,49 @@ fn main() -> eframe::Result<()> {
 }
 
 #[cfg(target_arch = "wasm32")]
-mod web {
-    use eframe::WebRunner;
-    use wasm_bindgen::prelude::*;
-
-    use crate::app::TypeFastApp;
-
-    #[derive(Clone)]
-    #[wasm_bindgen]
-    pub struct WebHandle {
-        runner: eframe::WebRunner,
-    }
-
-    #[wasm_bindgen]
-    impl WebHandle {
-        /// Installs a panic hook, then returns.
-        #[allow(clippy::new_without_default)]
-        #[wasm_bindgen(constructor)]
-        pub fn new() -> Self {
-            // Redirect [`log`] message to `console.log` and friends:
-            eframe::WebLogger::init(log::LevelFilter::Debug).ok();
-
-            Self {
-                runner: WebRunner::new(),
-            }
-        }
-
-        /// Call this once from JavaScript to start your app.
-        #[wasm_bindgen]
-        pub async fn start(&self, canvas_id: &str) -> Result<(), wasm_bindgen::JsValue> {
-            self.runner
-                .start(
-                    canvas_id,
-                    eframe::WebOptions::default(),
-                    Box::new(|cc| Box::new(TypeFastApp::new(cc))),
-                )
-                .await
-        }
-    }
-}
-
-#[cfg(target_arch = "wasm32")]
 fn main() {
-    console_error_panic_hook::set_once();
+    use app::TypeFastApp;
+    use eframe::wasm_bindgen::JsCast as _;
+    use eframe::web_sys;
 
-    tracing_wasm::set_as_global_default();
+    // Redirect `log` message to `console.log` and friends:
+    eframe::WebLogger::init(log::LevelFilter::Debug).ok();
+
+    let web_options = eframe::WebOptions::default();
 
     wasm_bindgen_futures::spawn_local(async {
-        let w = web::WebHandle::new();
-        w.start("type_fast").await.expect("failed to start in web")
+        let document = web_sys::window()
+            .expect("No window")
+            .document()
+            .expect("No document");
+
+        let canvas = document
+            .get_element_by_id("type_fast")
+            .expect("Failed to find type_fast")
+            .dyn_into::<web_sys::HtmlCanvasElement>()
+            .expect("type_fast was not a HtmlCanvasElement");
+
+        let start_result = eframe::WebRunner::new()
+            .start(
+                canvas,
+                web_options,
+                Box::new(|cc| Ok(Box::new(TypeFastApp::new(cc)))),
+            )
+            .await;
+
+        // Remove the loading text and spinner:
+        if let Some(loading_text) = document.get_element_by_id("loading_text") {
+            match start_result {
+                Ok(_) => {
+                    loading_text.remove();
+                }
+                Err(e) => {
+                    loading_text.set_inner_html(
+                        "<p> The app has crashed. See the developer console for details. </p>",
+                    );
+                    panic!("Failed to start eframe: {e:?}");
+                }
+            }
+        }
     });
 }

@@ -1,5 +1,3 @@
-use egui_notify::Toasts;
-
 use self::tabs::{TabView, Tabs};
 
 mod command_center;
@@ -14,11 +12,6 @@ pub struct TypeFastApp {
     #[serde(skip)]
     addable_modules: Vec<Module>,
     command_center_open: bool,
-}
-
-#[derive(Default)]
-pub struct Services {
-    pub notifier: Toasts,
 }
 
 #[derive(PartialEq)]

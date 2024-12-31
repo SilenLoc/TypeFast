@@ -2,10 +2,7 @@ mod command_helper_render;
 mod command_processer;
 mod theme_chooser;
 
-use crate::{
-    app::Services,
-    random::{Algorithm, ALGS},
-};
+use crate::random::{Algorithm, ALGS};
 
 use self::command_processer::process_command;
 
@@ -61,9 +58,9 @@ impl Default for TFSetting {
 }
 
 impl TFSetting {
-    pub fn render(&mut self, services: &mut Services, ui: &mut egui::Ui) {
+    pub fn render(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
-            process_command(self, services);
+            process_command(self);
             ui.with_layout(egui::Layout::top_down(egui::Align::LEFT), |ui| {
                 command_helper_render::render(self, ui);
                 ui.add_space(10.0);

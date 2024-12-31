@@ -2,7 +2,6 @@ use egui_dock::NodeIndex;
 use egui_dock::{DockState, Style};
 
 use super::Module;
-use super::Services;
 use super::TypeFastApp;
 use crate::current;
 use crate::{scoring::Score, settings::TFSetting, typewriter::TypeState};
@@ -45,8 +44,6 @@ pub struct TabView {
     settings: TFSetting,
     type_state: TypeState,
     score: Score,
-    #[serde(skip)]
-    services: Services,
 }
 
 impl egui_dock::TabViewer for TabView {
@@ -58,7 +55,7 @@ impl egui_dock::TabViewer for TabView {
             Module::Typing(_) => self
                 .type_state
                 .render(ui, &mut self.score, &mut self.settings),
-            Module::Settings(_) => self.settings.render(&mut self.services, ui),
+            Module::Settings(_) => self.settings.render(ui),
             Module::Score(_) => self.score.render(ui),
             Module::Current(_) => current::render(&self.settings.level, ui),
         }
