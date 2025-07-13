@@ -14,7 +14,7 @@ eframe = { version = "0.29", default-features = false, features = [
     "persistence",   # Enable restoring app state when restarting the app.
 ] }
 egui_extras ="0.29"
-egui_dock = "0.14"
+egui_dock = "0.17"
 catppuccin-egui = { version = "5.3.1", default-features = false, features = ["egui29"]  }
 
 tracing-subscriber = "0.3"
