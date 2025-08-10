@@ -22,7 +22,7 @@ serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
 random_word = { version = "0.4", features = ["en"] }
 log = "0.4"
-getrandom = { version = "0.2", features = ["js"] }
+getrandom = { version = "0.3", features = ["js"] }
 web-time = "1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
