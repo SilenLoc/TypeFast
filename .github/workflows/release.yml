@@ -12,7 +12,7 @@ jobs:
   build-github-pages:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # repo checkout
+      - uses: actions/checkout@v5 # repo checkout
       - name: Rust Cache # cache the rust build artefacts
         uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
