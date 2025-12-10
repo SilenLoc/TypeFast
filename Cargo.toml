@@ -20,7 +20,7 @@ catppuccin-egui = { version = "5.3.1", default-features = false, features = ["eg
 tracing-subscriber = "0.3"
 serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
-random_word = { version = "0.4", features = ["en"] }
+random_word = { version = "0.5", features = ["en"] }
 log = "0.4"
 getrandom = { version = "0.2", features = ["js"] }
 web-time = "1"
